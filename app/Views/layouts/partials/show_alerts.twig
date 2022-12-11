@@ -1,0 +1,14 @@
+{% set alert = session.getFlashdata('alert') %}
+{% if alert %}
+<script>
+{% if alert.options %}
+let options = {
+  "closeButton": true,
+  "newestOnTop": true,
+};
+options = Object.assign(options, {{ alert.options|raw }});
+toastr.options = options;
+{% endif %}
+toastr.{{ alert.type }}('{{ alert.msg|raw }}'{% if alert.title %}, '{{ alert.title|raw }}'{% endif %});
+</script>
+{% endif %}

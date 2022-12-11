@@ -1,0 +1,54 @@
+<!-- SEARCH FORM -->
+{{ form_open('search', 'method="GET" class="form-inline my-3"') }}
+<div class="input-group">
+    <input class="form-control form-control-sidebar" type="search" name="q" placeholder="Search" aria-label="Search">
+    <div class="input-group-append">
+        <button class="btn btn-sidebar">
+            <i class="fas fa-search fa-fw"></i>
+        </button>
+    </div>
+</div>
+{{ form_close() }}
+
+<!-- Sidebar Menu -->
+<nav class="mt-2">
+    <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent" data-widget="treeview" role="menu" data-accordion="false">
+        <li class="nav-item">
+            <a href="{{ site_url('home') }}" class="nav-link">
+                <i class="nav-icon fas fa-home"></i>
+                <p>Ekran główny</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ site_url('products') }}" class="nav-link">
+                <i class="nav-icon fas fa-cubes"></i>
+                <p>Produkty</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-shopping-basket"></i>
+                <p>Zamówienia</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-boxes"></i>
+                <p>Konta</p>
+            </a>
+        </li>
+        <li class="nav-header">EXAMPLES</li>
+        <li class="nav-item">
+            <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-users"></i>
+                <p>Użytkownicy</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-cogs"></i>
+                <p>Ustawienia</p>
+            </a>
+        </li>
+    </ul>
+</nav>

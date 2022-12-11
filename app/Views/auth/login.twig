@@ -1,0 +1,59 @@
+{% extends "layouts/auth.twig" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+    <div class="login-box">
+        <div class="login-logo">
+            {{ config.appName }}
+        </div>
+        <div class="card">
+            <div class="card-body login-card-body">
+                <p class="login-box-msg">Login to start session</p>
+                {{ form_open() }}
+                <div class="input-group mb-3">
+                    <input type="email" name="email" class="form-control {{ validation.hasError('email') ? 'is-invalid' }}" placeholder="Email">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-envelope"></span>
+                        </div>
+                    </div>
+                    {% if validation.hasError('email') %}
+                        <span class="error invalid-feedback">{{ validation.getError('email') }}</span>
+                    {% endif %}
+                </div>
+                <div class="input-group mb-3">
+                    <input type="password" name="password" class="form-control {{ validation.hasError('password') ? 'is-invalid' }}" placeholder="Password">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-lock"></span>
+                        </div>
+                    </div>
+                    {% if validation.hasError('password') %}
+                        <span class="error invalid-feedback">{{ validation.getError('password') }}</span>
+                    {% endif %}
+                </div>
+                <div class="row">
+                    <div class="col-8">
+                        <div class="icheck-primary">
+                            <input type="checkbox" name="remember_me" id="remember_me" value="true" {{ set_checkbox('remember_me', 'true') }}>
+                            <label for="remember_me">Remember me</label>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <button type="submit" class="btn btn-primary btn-block" name="login" value="true">Login</button>
+                    </div>
+                </div>
+                {{ form_close() }}
+                <p class="mb-1">
+                    <a href="{{ site_url('forgot-password') }}">Forgot password?</a><br>
+                </p>
+                {% if myConfig.register %}
+                <p class="mb-0">
+                    <a href="{{ site_url('register') }}" class="text-center">Register new</a>
+                </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
