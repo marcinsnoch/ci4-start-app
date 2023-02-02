@@ -57,15 +57,8 @@ abstract class BaseController extends Controller
 
     private function initTwig()
     {
-        $config = [
-            'functions_safe' => [
-                'current_url',
-                'd',
-                'dd',
-                'var_dump',
-            ],
-        ];
-        $this->twig = new Twig($config);
+        $twigConfig = config('Twig');
+        $this->twig = new Twig($twigConfig->config);
         $this->twig->addGlobal('myConfig', $this->myConfig);
         $this->twig->addGlobal('session', $this->session);
         $this->twig->addGlobal('validation', validation_errors());
