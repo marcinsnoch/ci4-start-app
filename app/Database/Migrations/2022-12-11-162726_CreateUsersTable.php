@@ -54,11 +54,11 @@ class CreateUsersTable extends Migration
                 'null' => true,
             ],
             'created_at' => [
-                'type'    => 'DATETIME',
+                'type' => 'DATETIME',
                 'default' => new RawSql('CURRENT_TIMESTAMP'),
             ],
             'updated_at' => [
-                'type'    => 'DATETIME',
+                'type' => 'DATETIME',
                 'default' => new RawSql('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
             ],
         ]);

@@ -30,7 +30,7 @@ class UserSeeder extends Seeder
                 'last_activity' => null,
             ],
         ];
-        for ($i = 0; $i < count($users); $i++) {
+        for ($i = 0; $i < count($users); ++$i) {
             $this->db->table('users')->insert($users[$i]);
         }
     }

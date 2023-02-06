@@ -8,13 +8,13 @@ class Profile extends BaseController
 {
     public function index()
     {
-        $user = userModel::find(session()->id);
+        $user = UserModel::find(session()->id);
         $this->twig->display('profile/index', compact('user'));
     }
 
     public function update()
     {
-        $user = userModel::find(session()->id);
+        $user = UserModel::find(session()->id);
         $rules = [
             'name' => ['label' => 'Full name', 'rules' => 'required|min_length[3]|max_length[20]'],
         ];

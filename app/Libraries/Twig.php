@@ -11,6 +11,7 @@ class Twig
 
     /**
      * @var array Twig Environment Options
+     *
      * @see https://twig.symfony.com/doc/3.x/api.html#environment-options
      */
     private $config = [];
@@ -25,6 +26,7 @@ class Twig
 
     /**
      * @var array Functions with `is_safe` option
+     *
      * @see https://twig.symfony.com/doc/3.x/advanced.html#automatic-escaping
      */
     private $functions_safe = [
@@ -85,9 +87,90 @@ class Twig
             'debug' => ENVIRONMENT !== 'production',
             'autoescape' => 'html',
         ];
-        
 
         $this->config = array_merge($this->config, $params);
+    }
+
+    /**
+     * Registers a Global.
+     *
+     * @param string $name  The global name
+     * @param mixed  $value The global value
+     */
+    public function addGlobal($name, $value)
+    {
+        $this->createTwig();
+        $this->twig->addGlobal($name, $value);
+    }
+
+    /**
+     * Renders Twig Template and Outputs.
+     *
+     * @param string $view   Template filename without `.twig`
+     * @param array  $params Array of parameters to pass to the template
+     *
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
+    public function display($view, $params = [])
+    {
+        echo $this->render($view, $params);
+    }
+
+    /**
+     * Renders Twig Template and Returns as String.
+     *
+     * @param string $view   Template filename without `.twig`
+     * @param array  $params Array of parameters to pass to the template
+     *
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
+    public function render($view, $params = []): string
+    {
+        $this->createTwig();
+        // We call addFunctions() here, because we must call addFunctions()
+        // after loading CodeIgniter functions in a controller.
+        $this->addFunctions();
+
+        $view = $view . '.twig';
+
+        return $this->twig->render($view, $params);
+    }
+
+    /**
+     * @param string $uri
+     * @param string $title
+     * @param array  $attributes only array is acceptable
+     */
+    public function safe_anchor(
+        $uri = '',
+        $title = '',
+        $attributes = []
+    ): string {
+        $uri = esc($uri, 'url');
+        $title = esc($title);
+
+        $new_attr = [];
+        foreach ($attributes as $key => $val) {
+            $new_attr[esc($key)] = $val;
+        }
+
+        return anchor($uri, $title, $new_attr);
+    }
+
+    public function validation_list_errors(): string
+    {
+        return \Config\Services::validation()->listErrors();
+    }
+
+    public function getTwig(): \Twig\Environment
+    {
+        $this->createTwig();
+
+        return $this->twig;
     }
 
     protected function resetTwig()
@@ -119,54 +202,6 @@ class Twig
     protected function setLoader($loader)
     {
         $this->loader = $loader;
-    }
-
-    /**
-     * Registers a Global
-     *
-     * @param string $name The global name
-     * @param mixed $value The global value
-     */
-    public function addGlobal($name, $value)
-    {
-        $this->createTwig();
-        $this->twig->addGlobal($name, $value);
-    }
-
-    /**
-     * Renders Twig Template and Outputs
-     *
-     * @param string $view Template filename without `.twig`
-     * @param array $params Array of parameters to pass to the template
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     */
-    public function display($view, $params = [])
-    {
-        echo $this->render($view, $params);
-    }
-
-    /**
-     * Renders Twig Template and Returns as String
-     *
-     * @param string $view Template filename without `.twig`
-     * @param array $params Array of parameters to pass to the template
-     * @return string
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     */
-    public function render($view, $params = []): string
-    {
-        $this->createTwig();
-        // We call addFunctions() here, because we must call addFunctions()
-        // after loading CodeIgniter functions in a controller.
-        $this->addFunctions();
-
-        $view = $view . '.twig';
-
-        return $this->twig->render($view, $params);
     }
 
     protected function addFunctions()
@@ -221,42 +256,5 @@ class Twig
         );
 
         $this->functions_added = true;
-    }
-
-    /**
-     * @param string $uri
-     * @param string $title
-     * @param array $attributes only array is acceptable
-     * @return string
-     */
-    public function safe_anchor(
-        $uri = '',
-        $title = '',
-        $attributes = []
-    ): string {
-        $uri = esc($uri, 'url');
-        $title = esc($title);
-
-        $new_attr = [];
-        foreach ($attributes as $key => $val) {
-            $new_attr[esc($key)] = $val;
-        }
-
-        return anchor($uri, $title, $new_attr);
-    }
-
-    public function validation_list_errors(): string
-    {
-        return \Config\Services::validation()->listErrors();
-    }
-
-    /**
-     * @return \Twig\Environment
-     */
-    public function getTwig(): \Twig\Environment
-    {
-        $this->createTwig();
-
-        return $this->twig;
     }
 }
