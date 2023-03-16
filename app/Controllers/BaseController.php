@@ -37,13 +37,16 @@ abstract class BaseController extends Controller
      *
      * @var array
      */
-    protected $helpers = ['alerts', 'app', 'cookie', 'form', 'url'];
+    protected $helpers = [];
 
     /**
      * Constructor.
      */
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
+    	// Load helpers
+    	$this->helpers = array_merge($this->helpers, ['alerts', 'app', 'cookie', 'form', 'url']);
+
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
 
