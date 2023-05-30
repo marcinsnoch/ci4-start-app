@@ -3,7 +3,11 @@
 ## Installation & updates
 
 ```shell
-gh repo clone marcinsnoch/ci4-app  app-name
+gh repo clone marcinsnoch/ci4-app AppName
+```
+
+```shell
+composer install
 ```
 
 ## Setup
@@ -88,9 +92,5 @@ exit;
 Then run
 
 ```shell
-php spark migrate
-```
-
-```shell
-php spark db:seed RunAll
+php spark migrate:refresh && php spark db:seed RunAll
 ```
