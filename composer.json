@@ -6,15 +6,15 @@
     "license": "MIT",
     "require": {
         "php": "^7.4 || ^8.0",
-        "codeigniter4/framework": "^4.0",
-        "codeigniter4/translations": "^4.2",
-        "twig/twig": "^3.0",
-        "agungsugiarto/codeigniter4-eloquent": "^2.0"
+        "codeigniter4/framework": "^4.3.6",
+        "codeigniter4/translations": "^4.3.6",
+        "twig/twig": "^3.6.1",
+        "agungsugiarto/codeigniter4-eloquent": "^2.0.1"
     },
     "require-dev": {
-        "fakerphp/faker": "^1.9",
-        "mikey179/vfsstream": "^1.6",
-        "phpunit/phpunit": "^9.1"
+        "fakerphp/faker": "^1.23.0",
+        "mikey179/vfsstream": "^1.6.11",
+        "phpunit/phpunit": "^9.6.9"
     },
     "suggest": {
         "ext-fileinfo": "Improves mime type detection for files"

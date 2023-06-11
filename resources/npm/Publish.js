@@ -1,5 +1,5 @@
-const Plugins = require('./Plugins');
-const fse = require('fs-extra');
+const { Plugins, PluginsDir } = require("./Plugins");
+const fse = require("fs-extra");
 
 class Publish {
     constructor() {
@@ -14,10 +14,10 @@ class Publish {
         if (process.argv.length > 2) {
             let arg = process.argv[2];
             switch (arg) {
-                case '-v':
-                case '--verbose':
+                case "-v":
+                case "--verbose":
                     this.options.verbose = true;
-                    break
+                    break;
                 default:
                     throw new Error(`Unknown option ${arg}`);
             }
@@ -25,17 +25,30 @@ class Publish {
     }
 
     run() {
+        // Remove previous files
+        if (fse.pathExists(PluginsDir)) {
+            fse.removeSync(PluginsDir);
+
+            if (this.options.verbose) {
+                console.log(`Removed folder: ${PluginsDir}`);
+            }
+        }
         // Publish files
         Plugins.forEach((module) => {
             try {
-                if (fse.existsSync(module.from)) {
-                    fse.copySync(module.from, module.to);
+                if (fse.pathExists(PluginsDir)) {
+                    fse.copySync(module.from, PluginsDir + module.toPluginsDir);
                 } else {
-                    fse.copySync(module.from.replace('node_modules/', '../'), module.to);
+                    fse.copySync(
+                        module.from.replace("node_modules/", "../"),
+                        PluginsDir + module.toPluginsDir
+                    );
                 }
 
                 if (this.options.verbose) {
-                    console.log(`Copied ${module.from} to ${module.to}`);
+                    console.log(
+                        `Copied ${module.from} to ${PluginsDir + module.toPluginsDir}`
+                    );
                 }
             } catch (err) {
                 console.error(`Error: ${err}`);
@@ -44,4 +57,4 @@ class Publish {
     }
 }
 
-(new Publish()).run();
+new Publish().run();

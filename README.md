@@ -47,6 +47,19 @@ CI_ENVIRONMENT = development
 #--------------------------------------------------------------------
 
 app.baseURL = 'http://127.0.0.1:8080/'
+# If you have trouble with `.`, you could also use `_`.
+# app_baseURL = ''
+# app.forceGlobalSecureRequests = false
+
+app.sessionDriver = 'CodeIgniter\Session\Handlers\DatabaseHandler'
+app.sessionCookieName = 'ci_session'
+app.sessionExpiration = 7200
+app.sessionSavePath = 'ci_sessions'
+app.sessionMatchIP = true
+app.sessionTimeToUpdate = 300
+app.sessionRegenerateDestroy = true
+
+# app.CSPEnabled = false
 
 #--------------------------------------------------------------------
 # DATABASE
@@ -59,18 +72,6 @@ database.default.password = root
 database.default.DBDriver = MySQLi
 # database.default.DBPrefix =
 # database.default.port = 3306
-
-#--------------------------------------------------------------------
-# SESSION
-#--------------------------------------------------------------------
-
-app.sessionDriver = 'CodeIgniter\Session\Handlers\DatabaseHandler'
-app.sessionCookieName = 'ci_session'
-app.sessionExpiration = 7200
-app.sessionSavePath = 'ci_sessions'
-app.sessionMatchIP = true
-app.sessionTimeToUpdate = 300
-app.sessionRegenerateDestroy = true
 ```
 
 ## Database
