@@ -12,7 +12,7 @@ use Config\Services;
 use Psr\Log\LoggerInterface;
 
 /**
- * Class BaseController.
+ * Class BaseController
  *
  * BaseController provides a convenient place for loading components
  * and performing functions that are needed by all your controllers.
@@ -40,7 +40,13 @@ abstract class BaseController extends Controller
     protected $helpers = [];
 
     /**
-     * Constructor.
+     * Be sure to declare properties for any property fetch you initialized.
+     * The creation of dynamic property is deprecated in PHP 8.2.
+     */
+    // protected $session;
+
+    /**
+     * @return void
      */
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
@@ -65,5 +71,5 @@ abstract class BaseController extends Controller
         $this->twig->addGlobal('myConfig', $this->myConfig);
         $this->twig->addGlobal('session', $this->session);
         $this->twig->addGlobal('validation', validation_errors());
-    }
+	}
 }
