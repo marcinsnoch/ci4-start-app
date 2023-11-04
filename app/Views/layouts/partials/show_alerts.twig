@@ -1,14 +1,17 @@
 {% set alert = session.getFlashdata('alert') %}
 {% if alert %}
-<script>
-{% if alert.options %}
-let options = {
-  "closeButton": true,
-  "newestOnTop": true,
-};
-options = Object.assign(options, {{ alert.options|raw }});
-toastr.options = options;
-{% endif %}
-toastr.{{ alert.type }}('{{ alert.msg|raw }}'{% if alert.title %}, '{{ alert.title|raw }}'{% endif %});
-</script>
+    <script>
+        let alertContent = {
+            autohide: true,
+            body: '{{ alert.msg|raw }}',
+            class: 'bg-{{ alert.type }}',
+            icon: 'fa fa-info-circle',
+            delay: 5000,
+            title: '{{ alert.title|raw|default('Alert title') }}'
+        };
+        {% if alert.options %}
+        Object.assign(alertContent, {{ alert.options|raw }});
+        {% endif %}
+        $(document).Toasts('create', alertContent);
+    </script>
 {% endif %}
