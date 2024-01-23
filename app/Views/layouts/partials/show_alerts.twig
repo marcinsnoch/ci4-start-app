@@ -7,7 +7,7 @@
             class: 'bg-{{ alert.type }}',
             icon: 'fa fa-info-circle',
             delay: 5000,
-            title: '{{ alert.title|raw|default('Alert title') }}'
+            title: '{{ alert.title|raw }}'
         };
         {% if alert.options %}
         Object.assign(alertContent, {{ alert.options|raw }});
