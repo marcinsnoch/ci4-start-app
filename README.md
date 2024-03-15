@@ -180,6 +180,17 @@ encryption.key = hex2bin:b2585f98b8f4fa7d7dd959e65d3c3c9386f0ebae3b7466e1f995a08
 
 ## Database
 
+Set charset to 'utf8mb4'
+
+`app/Config/Database.php`
+
+```php
+'charset'      => 'utf8mb4',
+'DBCollat'     => 'utf8mb4_general_ci',
+```
+
+
+
 Create database e.g. ci4_app
 
 ```shell
