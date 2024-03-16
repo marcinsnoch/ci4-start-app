@@ -16,9 +16,11 @@ class Profile extends BaseController
     {
         $user = UserModel::find(session()->id);
         $rules = [
-            'name' => ['label' => 'Full name', 'rules' => 'required|min_length[3]|max_length[20]'],
+            'first_name' => ['label' => 'First name', 'rules' => 'required|min_length[3]|max_length[20]'],
+            'last_name' => ['label' => 'Last name', 'rules' => 'required|min_length[3]|max_length[20]'],
         ];
-        $user->name = $this->request->getPost('name');
+        $user->first_name = $this->request->getPost('first_name');
+        $user->last_name = $this->request->getPost('last_name');
         if ($this->request->getPost('password') != null) {
             $rules['password'] = ['label' => 'Password', 'rules' => 'required|min_length[8]|max_length[255]'];
             $rules['confirm_password'] = ['label' => 'Confirm password', 'rules' => 'matches[password]'];

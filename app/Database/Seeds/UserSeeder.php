@@ -10,7 +10,9 @@ class UserSeeder extends Seeder
     {
         $users = [
             [
-                'name' => 'Marcin',
+                'first_name' => 'Marcin',
+                'last_name' => 'Snoch',
+                'job_title' => 'Administrator',
                 'email' => 'admin@admin.pl',
                 'password' => '$2y$10$vBqB8ef.o3XtJPsApSFyqekP4k8sEGCx0/9VMbgTcwp9Fo3lR6/lm', // password
                 'is_admin' => 1,
@@ -20,7 +22,9 @@ class UserSeeder extends Seeder
                 'last_activity' => null,
             ],
             [
-                'name' => 'User',
+                'first_name' => 'User',
+                'last_name' => 'user',
+                'job_title' => 'Regular user',
                 'email' => 'user@user.pl',
                 'password' => '$2y$10$vBqB8ef.o3XtJPsApSFyqekP4k8sEGCx0/9VMbgTcwp9Fo3lR6/lm', // password
                 'is_admin' => 0,

@@ -2,37 +2,41 @@
 
 namespace App\Models;
 
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 
 class UserModel extends Model
 {
     protected $table = 'users';
     protected $primaryKey = 'id';
-    protected $fillable = ['name', 'email', 'password', 'remember_token', 'token', 'terms', 'updated_at'];
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
+    ];
+    protected $fillable = [
+        'first_name',
+        'last_name',
+        'email',
+        'password',
+        'is_admin',
+        'remember_token',
+        'terms',
+        'token',
+        'last_activity',
+    ];
 
-    protected function beforeInsert(array $data)
+    protected function serializeDate(DateTimeInterface $date)
     {
-        $data = $this->passwordHash($data);
-        // $data['data']['token'] = bin2hex(random_bytes(64));
-        $data['data']['created_at'] = date('Y-m-d H:i:s');
-
-        return $data;
+        return $date->format('Y-m-d H:i:s');
     }
 
-    protected function beforeUpdate(array $data)
+    public function setPasswordAttribute($password)
     {
-        $data = $this->passwordHash($data);
-        $data['data']['updated_at'] = date('Y-m-d H:i:s');
-
-        return $data;
+        $this->attributes['password'] = password_hash($password, PASSWORD_DEFAULT);
     }
-
-    protected function passwordHash(array $data)
+    
+    public function getFullNameAttribute()
     {
-        if (isset($data['data']['password'])) {
-            $data['data']['password'] = password_hash($data['data']['password'], PASSWORD_DEFAULT);
-        }
-
-        return $data;
+        return "{$this->first_name} {$this->last_name}";
     }
 }

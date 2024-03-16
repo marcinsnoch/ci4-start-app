@@ -4,24 +4,20 @@
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.jQuery));
 })(this, (function ($$a) { 'use strict';
 
-  function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-  var $__default = /*#__PURE__*/_interopDefaultLegacy($$a);
-
-  function _typeof(obj) {
+  function _typeof(o) {
     "@babel/helpers - typeof";
 
-    return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
-      return typeof obj;
-    } : function (obj) {
-      return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    }, _typeof(obj);
+    return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) {
+      return typeof o;
+    } : function (o) {
+      return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o;
+    }, _typeof(o);
   }
 
   var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
   var check = function (it) {
-    return it && it.Math == Math && it;
+    return it && it.Math === Math && it;
   };
 
   // https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
@@ -31,6 +27,7 @@
     check(typeof window == 'object' && window) ||
     // eslint-disable-next-line no-restricted-globals -- safe
     check(typeof self == 'object' && self) ||
+    check(typeof commonjsGlobal == 'object' && commonjsGlobal) ||
     check(typeof commonjsGlobal == 'object' && commonjsGlobal) ||
     // eslint-disable-next-line no-new-func -- fallback
     (function () { return this; })() || Function('return this')();
@@ -50,7 +47,7 @@
   // Detect IE8's incomplete defineProperty implementation
   var descriptors = !fails$g(function () {
     // eslint-disable-next-line es/no-object-defineproperty -- required for testing
-    return Object.defineProperty({}, 1, { get: function () { return 7; } })[1] != 7;
+    return Object.defineProperty({}, 1, { get: function () { return 7; } })[1] !== 7;
   });
 
   var fails$f = fails$h;
@@ -101,37 +98,27 @@
   var call$5 = FunctionPrototype$1.call;
   var uncurryThisWithBind = NATIVE_BIND$1 && FunctionPrototype$1.bind.bind(call$5, call$5);
 
-  var functionUncurryThisRaw = function (fn) {
-    return NATIVE_BIND$1 ? uncurryThisWithBind(fn) : function () {
+  var functionUncurryThis = NATIVE_BIND$1 ? uncurryThisWithBind : function (fn) {
+    return function () {
       return call$5.apply(fn, arguments);
     };
   };
 
-  var uncurryThisRaw$1 = functionUncurryThisRaw;
+  var uncurryThis$i = functionUncurryThis;
 
-  var toString$6 = uncurryThisRaw$1({}.toString);
-  var stringSlice = uncurryThisRaw$1(''.slice);
+  var toString$6 = uncurryThis$i({}.toString);
+  var stringSlice$1 = uncurryThis$i(''.slice);
 
   var classofRaw$2 = function (it) {
-    return stringSlice(toString$6(it), 8, -1);
+    return stringSlice$1(toString$6(it), 8, -1);
   };
 
-  var classofRaw$1 = classofRaw$2;
-  var uncurryThisRaw = functionUncurryThisRaw;
-
-  var functionUncurryThis = function (fn) {
-    // Nashorn bug:
-    //   https://github.com/zloirock/core-js/issues/1128
-    //   https://github.com/zloirock/core-js/issues/1130
-    if (classofRaw$1(fn) === 'Function') return uncurryThisRaw(fn);
-  };
-
-  var uncurryThis$f = functionUncurryThis;
+  var uncurryThis$h = functionUncurryThis;
   var fails$e = fails$h;
   var classof$5 = classofRaw$2;
 
   var $Object$3 = Object;
-  var split = uncurryThis$f(''.split);
+  var split = uncurryThis$h(''.split);
 
   // fallback for non-array-like ES3 and non-enumerable old V8 strings
   var indexedObject = fails$e(function () {
@@ -139,7 +126,7 @@
     // eslint-disable-next-line no-prototype-builtins -- safe
     return !$Object$3('z').propertyIsEnumerable(0);
   }) ? function (it) {
-    return classof$5(it) == 'String' ? split(it, '') : $Object$3(it);
+    return classof$5(it) === 'String' ? split(it, '') : $Object$3(it);
   } : $Object$3;
 
   // we can't use just `it == null` since of `document.all` special case
@@ -155,7 +142,7 @@
   // `RequireObjectCoercible` abstract operation
   // https://tc39.es/ecma262/#sec-requireobjectcoercible
   var requireObjectCoercible$3 = function (it) {
-    if (isNullOrUndefined$1(it)) throw $TypeError$8("Can't call method on " + it);
+    if (isNullOrUndefined$1(it)) throw new $TypeError$8("Can't call method on " + it);
     return it;
   };
 
@@ -167,36 +154,21 @@
     return IndexedObject$2(requireObjectCoercible$2(it));
   };
 
-  var documentAll$2 = typeof document == 'object' && document.all;
-
   // https://tc39.es/ecma262/#sec-IsHTMLDDA-internal-slot
-  var IS_HTMLDDA = typeof documentAll$2 == 'undefined' && documentAll$2 !== undefined;
-
-  var documentAll_1 = {
-    all: documentAll$2,
-    IS_HTMLDDA: IS_HTMLDDA
-  };
-
-  var $documentAll$1 = documentAll_1;
-
-  var documentAll$1 = $documentAll$1.all;
+  var documentAll = typeof document == 'object' && document.all;
 
   // `IsCallable` abstract operation
   // https://tc39.es/ecma262/#sec-iscallable
-  var isCallable$c = $documentAll$1.IS_HTMLDDA ? function (argument) {
-    return typeof argument == 'function' || argument === documentAll$1;
+  // eslint-disable-next-line unicorn/no-typeof-undefined -- required for testing
+  var isCallable$c = typeof documentAll == 'undefined' && documentAll !== undefined ? function (argument) {
+    return typeof argument == 'function' || argument === documentAll;
   } : function (argument) {
     return typeof argument == 'function';
   };
 
   var isCallable$b = isCallable$c;
-  var $documentAll = documentAll_1;
 
-  var documentAll = $documentAll.all;
-
-  var isObject$8 = $documentAll.IS_HTMLDDA ? function (it) {
-    return typeof it == 'object' ? it !== null : isCallable$b(it) || it === documentAll;
-  } : function (it) {
+  var isObject$8 = function (it) {
     return typeof it == 'object' ? it !== null : isCallable$b(it);
   };
 
@@ -207,17 +179,15 @@
     return isCallable$a(argument) ? argument : undefined;
   };
 
-  var getBuiltIn$5 = function (namespace, method) {
+  var getBuiltIn$4 = function (namespace, method) {
     return arguments.length < 2 ? aFunction(global$a[namespace]) : global$a[namespace] && global$a[namespace][method];
   };
 
-  var uncurryThis$e = functionUncurryThis;
+  var uncurryThis$g = functionUncurryThis;
 
-  var objectIsPrototypeOf = uncurryThis$e({}.isPrototypeOf);
+  var objectIsPrototypeOf = uncurryThis$g({}.isPrototypeOf);
 
-  var getBuiltIn$4 = getBuiltIn$5;
-
-  var engineUserAgent = getBuiltIn$4('navigator', 'userAgent') || '';
+  var engineUserAgent = typeof navigator != 'undefined' && String(navigator.userAgent) || '';
 
   var global$9 = global$b;
   var userAgent$2 = engineUserAgent;
@@ -248,29 +218,32 @@
   var engineV8Version = version;
 
   /* eslint-disable es/no-symbol -- required for testing */
-
   var V8_VERSION$2 = engineV8Version;
   var fails$d = fails$h;
+  var global$8 = global$b;
+
+  var $String$4 = global$8.String;
 
   // eslint-disable-next-line es/no-object-getownpropertysymbols -- required for testing
   var symbolConstructorDetection = !!Object.getOwnPropertySymbols && !fails$d(function () {
-    var symbol = Symbol();
+    var symbol = Symbol('symbol detection');
     // Chrome 38 Symbol has incorrect toString conversion
     // `get-own-property-symbols` polyfill symbols converted to object are not Symbol instances
-    return !String(symbol) || !(Object(symbol) instanceof Symbol) ||
+    // nb: Do not call `String` directly to avoid this being optimized out to `symbol+''` which will,
+    // of course, fail.
+    return !$String$4(symbol) || !(Object(symbol) instanceof Symbol) ||
       // Chrome 38-40 symbols are not inherited from DOM collections prototypes to instances
       !Symbol.sham && V8_VERSION$2 && V8_VERSION$2 < 41;
   });
 
   /* eslint-disable es/no-symbol -- required for testing */
-
   var NATIVE_SYMBOL$1 = symbolConstructorDetection;
 
   var useSymbolAsUid = NATIVE_SYMBOL$1
     && !Symbol.sham
     && typeof Symbol.iterator == 'symbol';
 
-  var getBuiltIn$3 = getBuiltIn$5;
+  var getBuiltIn$3 = getBuiltIn$4;
   var isCallable$9 = isCallable$c;
   var isPrototypeOf$1 = objectIsPrototypeOf;
   var USE_SYMBOL_AS_UID$1 = useSymbolAsUid;
@@ -284,11 +257,11 @@
     return isCallable$9($Symbol) && isPrototypeOf$1($Symbol.prototype, $Object$2(it));
   };
 
-  var $String$2 = String;
+  var $String$3 = String;
 
   var tryToString$2 = function (argument) {
     try {
-      return $String$2(argument);
+      return $String$3(argument);
     } catch (error) {
       return 'Object';
     }
@@ -302,7 +275,7 @@
   // `Assert: IsCallable(argument) is true`
   var aCallable$3 = function (argument) {
     if (isCallable$8(argument)) return argument;
-    throw $TypeError$7(tryToString$1(argument) + ' is not a function');
+    throw new $TypeError$7(tryToString$1(argument) + ' is not a function');
   };
 
   var aCallable$2 = aCallable$3;
@@ -328,43 +301,45 @@
     if (pref === 'string' && isCallable$7(fn = input.toString) && !isObject$7(val = call$4(fn, input))) return val;
     if (isCallable$7(fn = input.valueOf) && !isObject$7(val = call$4(fn, input))) return val;
     if (pref !== 'string' && isCallable$7(fn = input.toString) && !isObject$7(val = call$4(fn, input))) return val;
-    throw $TypeError$6("Can't convert object to primitive value");
+    throw new $TypeError$6("Can't convert object to primitive value");
   };
 
-  var shared$3 = {exports: {}};
+  var sharedStore = {exports: {}};
 
-  var global$8 = global$b;
+  var global$7 = global$b;
 
   // eslint-disable-next-line es/no-object-defineproperty -- safe
   var defineProperty$3 = Object.defineProperty;
 
   var defineGlobalProperty$3 = function (key, value) {
     try {
-      defineProperty$3(global$8, key, { value: value, configurable: true, writable: true });
+      defineProperty$3(global$7, key, { value: value, configurable: true, writable: true });
     } catch (error) {
-      global$8[key] = value;
+      global$7[key] = value;
     } return value;
   };
 
-  var global$7 = global$b;
+  var globalThis$1 = global$b;
   var defineGlobalProperty$2 = defineGlobalProperty$3;
 
   var SHARED = '__core-js_shared__';
-  var store$3 = global$7[SHARED] || defineGlobalProperty$2(SHARED, {});
+  var store$3 = sharedStore.exports = globalThis$1[SHARED] || defineGlobalProperty$2(SHARED, {});
 
-  var sharedStore = store$3;
-
-  var store$2 = sharedStore;
-
-  (shared$3.exports = function (key, value) {
-    return store$2[key] || (store$2[key] = value !== undefined ? value : {});
-  })('versions', []).push({
-    version: '3.25.5',
+  (store$3.versions || (store$3.versions = [])).push({
+    version: '3.36.0',
     mode: 'global',
-    copyright: '© 2014-2022 Denis Pushkarev (zloirock.ru)',
-    license: 'https://github.com/zloirock/core-js/blob/v3.25.5/LICENSE',
+    copyright: '© 2014-2024 Denis Pushkarev (zloirock.ru)',
+    license: 'https://github.com/zloirock/core-js/blob/v3.36.0/LICENSE',
     source: 'https://github.com/zloirock/core-js'
   });
+
+  var sharedStoreExports = sharedStore.exports;
+
+  var store$2 = sharedStoreExports;
+
+  var shared$3 = function (key, value) {
+    return store$2[key] || (store$2[key] = value || {});
+  };
 
   var requireObjectCoercible$1 = requireObjectCoercible$3;
 
@@ -376,10 +351,10 @@
     return $Object$1(requireObjectCoercible$1(argument));
   };
 
-  var uncurryThis$d = functionUncurryThis;
+  var uncurryThis$f = functionUncurryThis;
   var toObject$5 = toObject$6;
 
-  var hasOwnProperty = uncurryThis$d({}.hasOwnProperty);
+  var hasOwnProperty = uncurryThis$f({}.hasOwnProperty);
 
   // `HasOwnProperty` abstract operation
   // https://tc39.es/ecma262/#sec-hasownproperty
@@ -388,38 +363,32 @@
     return hasOwnProperty(toObject$5(it), key);
   };
 
-  var uncurryThis$c = functionUncurryThis;
+  var uncurryThis$e = functionUncurryThis;
 
   var id = 0;
   var postfix = Math.random();
-  var toString$5 = uncurryThis$c(1.0.toString);
+  var toString$5 = uncurryThis$e(1.0.toString);
 
   var uid$2 = function (key) {
     return 'Symbol(' + (key === undefined ? '' : key) + ')_' + toString$5(++id + postfix, 36);
   };
 
   var global$6 = global$b;
-  var shared$2 = shared$3.exports;
+  var shared$2 = shared$3;
   var hasOwn$7 = hasOwnProperty_1;
   var uid$1 = uid$2;
   var NATIVE_SYMBOL = symbolConstructorDetection;
   var USE_SYMBOL_AS_UID = useSymbolAsUid;
 
-  var WellKnownSymbolsStore = shared$2('wks');
   var Symbol$2 = global$6.Symbol;
-  var symbolFor = Symbol$2 && Symbol$2['for'];
-  var createWellKnownSymbol = USE_SYMBOL_AS_UID ? Symbol$2 : Symbol$2 && Symbol$2.withoutSetter || uid$1;
+  var WellKnownSymbolsStore = shared$2('wks');
+  var createWellKnownSymbol = USE_SYMBOL_AS_UID ? Symbol$2['for'] || Symbol$2 : Symbol$2 && Symbol$2.withoutSetter || uid$1;
 
   var wellKnownSymbol$8 = function (name) {
-    if (!hasOwn$7(WellKnownSymbolsStore, name) || !(NATIVE_SYMBOL || typeof WellKnownSymbolsStore[name] == 'string')) {
-      var description = 'Symbol.' + name;
-      if (NATIVE_SYMBOL && hasOwn$7(Symbol$2, name)) {
-        WellKnownSymbolsStore[name] = Symbol$2[name];
-      } else if (USE_SYMBOL_AS_UID && symbolFor) {
-        WellKnownSymbolsStore[name] = symbolFor(description);
-      } else {
-        WellKnownSymbolsStore[name] = createWellKnownSymbol(description);
-      }
+    if (!hasOwn$7(WellKnownSymbolsStore, name)) {
+      WellKnownSymbolsStore[name] = NATIVE_SYMBOL && hasOwn$7(Symbol$2, name)
+        ? Symbol$2[name]
+        : createWellKnownSymbol('Symbol.' + name);
     } return WellKnownSymbolsStore[name];
   };
 
@@ -443,7 +412,7 @@
       if (pref === undefined) pref = 'default';
       result = call$3(exoticToPrim, input, pref);
       if (!isObject$6(result) || isSymbol$1(result)) return result;
-      throw $TypeError$5("Can't convert object to primitive value");
+      throw new $TypeError$5("Can't convert object to primitive value");
     }
     if (pref === undefined) pref = 'number';
     return ordinaryToPrimitive(input, pref);
@@ -454,7 +423,7 @@
 
   // `ToPropertyKey` abstract operation
   // https://tc39.es/ecma262/#sec-topropertykey
-  var toPropertyKey$3 = function (argument) {
+  var toPropertyKey$2 = function (argument) {
     var key = toPrimitive(argument, 'string');
     return isSymbol(key) ? key : key + '';
   };
@@ -470,24 +439,24 @@
     return EXISTS$1 ? document$1.createElement(it) : {};
   };
 
-  var DESCRIPTORS$9 = descriptors;
+  var DESCRIPTORS$a = descriptors;
   var fails$c = fails$h;
   var createElement = documentCreateElement$1;
 
   // Thanks to IE8 for its funny defineProperty
-  var ie8DomDefine = !DESCRIPTORS$9 && !fails$c(function () {
+  var ie8DomDefine = !DESCRIPTORS$a && !fails$c(function () {
     // eslint-disable-next-line es/no-object-defineproperty -- required for testing
     return Object.defineProperty(createElement('div'), 'a', {
       get: function () { return 7; }
-    }).a != 7;
+    }).a !== 7;
   });
 
-  var DESCRIPTORS$8 = descriptors;
+  var DESCRIPTORS$9 = descriptors;
   var call$2 = functionCall;
   var propertyIsEnumerableModule$1 = objectPropertyIsEnumerable;
   var createPropertyDescriptor$2 = createPropertyDescriptor$3;
   var toIndexedObject$4 = toIndexedObject$5;
-  var toPropertyKey$2 = toPropertyKey$3;
+  var toPropertyKey$1 = toPropertyKey$2;
   var hasOwn$6 = hasOwnProperty_1;
   var IE8_DOM_DEFINE$1 = ie8DomDefine;
 
@@ -496,9 +465,9 @@
 
   // `Object.getOwnPropertyDescriptor` method
   // https://tc39.es/ecma262/#sec-object.getownpropertydescriptor
-  objectGetOwnPropertyDescriptor.f = DESCRIPTORS$8 ? $getOwnPropertyDescriptor$1 : function getOwnPropertyDescriptor(O, P) {
+  objectGetOwnPropertyDescriptor.f = DESCRIPTORS$9 ? $getOwnPropertyDescriptor$1 : function getOwnPropertyDescriptor(O, P) {
     O = toIndexedObject$4(O);
-    P = toPropertyKey$2(P);
+    P = toPropertyKey$1(P);
     if (IE8_DOM_DEFINE$1) try {
       return $getOwnPropertyDescriptor$1(O, P);
     } catch (error) { /* empty */ }
@@ -507,35 +476,35 @@
 
   var objectDefineProperty = {};
 
-  var DESCRIPTORS$7 = descriptors;
+  var DESCRIPTORS$8 = descriptors;
   var fails$b = fails$h;
 
   // V8 ~ Chrome 36-
   // https://bugs.chromium.org/p/v8/issues/detail?id=3334
-  var v8PrototypeDefineBug = DESCRIPTORS$7 && fails$b(function () {
+  var v8PrototypeDefineBug = DESCRIPTORS$8 && fails$b(function () {
     // eslint-disable-next-line es/no-object-defineproperty -- required for testing
     return Object.defineProperty(function () { /* empty */ }, 'prototype', {
       value: 42,
       writable: false
-    }).prototype != 42;
+    }).prototype !== 42;
   });
 
   var isObject$4 = isObject$8;
 
-  var $String$1 = String;
+  var $String$2 = String;
   var $TypeError$4 = TypeError;
 
   // `Assert: Type(argument) is Object`
   var anObject$6 = function (argument) {
     if (isObject$4(argument)) return argument;
-    throw $TypeError$4($String$1(argument) + ' is not an object');
+    throw new $TypeError$4($String$2(argument) + ' is not an object');
   };
 
-  var DESCRIPTORS$6 = descriptors;
+  var DESCRIPTORS$7 = descriptors;
   var IE8_DOM_DEFINE = ie8DomDefine;
   var V8_PROTOTYPE_DEFINE_BUG$1 = v8PrototypeDefineBug;
   var anObject$5 = anObject$6;
-  var toPropertyKey$1 = toPropertyKey$3;
+  var toPropertyKey = toPropertyKey$2;
 
   var $TypeError$3 = TypeError;
   // eslint-disable-next-line es/no-object-defineproperty -- safe
@@ -548,9 +517,9 @@
 
   // `Object.defineProperty` method
   // https://tc39.es/ecma262/#sec-object.defineproperty
-  objectDefineProperty.f = DESCRIPTORS$6 ? V8_PROTOTYPE_DEFINE_BUG$1 ? function defineProperty(O, P, Attributes) {
+  objectDefineProperty.f = DESCRIPTORS$7 ? V8_PROTOTYPE_DEFINE_BUG$1 ? function defineProperty(O, P, Attributes) {
     anObject$5(O);
-    P = toPropertyKey$1(P);
+    P = toPropertyKey(P);
     anObject$5(Attributes);
     if (typeof O === 'function' && P === 'prototype' && 'value' in Attributes && WRITABLE in Attributes && !Attributes[WRITABLE]) {
       var current = $getOwnPropertyDescriptor(O, P);
@@ -565,21 +534,21 @@
     } return $defineProperty(O, P, Attributes);
   } : $defineProperty : function defineProperty(O, P, Attributes) {
     anObject$5(O);
-    P = toPropertyKey$1(P);
+    P = toPropertyKey(P);
     anObject$5(Attributes);
     if (IE8_DOM_DEFINE) try {
       return $defineProperty(O, P, Attributes);
     } catch (error) { /* empty */ }
-    if ('get' in Attributes || 'set' in Attributes) throw $TypeError$3('Accessors not supported');
+    if ('get' in Attributes || 'set' in Attributes) throw new $TypeError$3('Accessors not supported');
     if ('value' in Attributes) O[P] = Attributes.value;
     return O;
   };
 
-  var DESCRIPTORS$5 = descriptors;
+  var DESCRIPTORS$6 = descriptors;
   var definePropertyModule$4 = objectDefineProperty;
   var createPropertyDescriptor$1 = createPropertyDescriptor$3;
 
-  var createNonEnumerableProperty$2 = DESCRIPTORS$5 ? function (object, key, value) {
+  var createNonEnumerableProperty$2 = DESCRIPTORS$6 ? function (object, key, value) {
     return definePropertyModule$4.f(object, key, createPropertyDescriptor$1(1, value));
   } : function (object, key, value) {
     object[key] = value;
@@ -588,17 +557,17 @@
 
   var makeBuiltIn$2 = {exports: {}};
 
-  var DESCRIPTORS$4 = descriptors;
+  var DESCRIPTORS$5 = descriptors;
   var hasOwn$5 = hasOwnProperty_1;
 
   var FunctionPrototype = Function.prototype;
   // eslint-disable-next-line es/no-object-getownpropertydescriptor -- safe
-  var getDescriptor = DESCRIPTORS$4 && Object.getOwnPropertyDescriptor;
+  var getDescriptor = DESCRIPTORS$5 && Object.getOwnPropertyDescriptor;
 
   var EXISTS = hasOwn$5(FunctionPrototype, 'name');
   // additional protection from minified / mangled / dropped function names
   var PROPER = EXISTS && (function something() { /* empty */ }).name === 'something';
-  var CONFIGURABLE = EXISTS && (!DESCRIPTORS$4 || (DESCRIPTORS$4 && getDescriptor(FunctionPrototype, 'name').configurable));
+  var CONFIGURABLE = EXISTS && (!DESCRIPTORS$5 || (DESCRIPTORS$5 && getDescriptor(FunctionPrototype, 'name').configurable));
 
   var functionName = {
     EXISTS: EXISTS,
@@ -606,11 +575,11 @@
     CONFIGURABLE: CONFIGURABLE
   };
 
-  var uncurryThis$b = functionUncurryThis;
+  var uncurryThis$d = functionUncurryThis;
   var isCallable$6 = isCallable$c;
-  var store$1 = sharedStore;
+  var store$1 = sharedStoreExports;
 
-  var functionToString = uncurryThis$b(Function.toString);
+  var functionToString = uncurryThis$d(Function.toString);
 
   // this helper broken in `core-js@3.4.1-3.4.4`, so we can't use `shared` helper
   if (!isCallable$6(store$1.inspectSource)) {
@@ -628,7 +597,7 @@
 
   var weakMapBasicDetection = isCallable$5(WeakMap$1) && /native code/.test(String(WeakMap$1));
 
-  var shared$1 = shared$3.exports;
+  var shared$1 = shared$3;
   var uid = uid$2;
 
   var keys = shared$1('keys');
@@ -644,7 +613,7 @@
   var isObject$3 = isObject$8;
   var createNonEnumerableProperty$1 = createNonEnumerableProperty$2;
   var hasOwn$4 = hasOwnProperty_1;
-  var shared = sharedStore;
+  var shared = sharedStoreExports;
   var sharedKey$1 = sharedKey$2;
   var hiddenKeys$3 = hiddenKeys$4;
 
@@ -661,7 +630,7 @@
     return function (it) {
       var state;
       if (!isObject$3(it) || (state = get(it)).type !== TYPE) {
-        throw TypeError$1('Incompatible receiver, ' + TYPE + ' required');
+        throw new TypeError$1('Incompatible receiver, ' + TYPE + ' required');
       } return state;
     };
   };
@@ -674,7 +643,7 @@
     store.set = store.set;
     /* eslint-enable no-self-assign -- prototype methods protection */
     set = function (it, metadata) {
-      if (store.has(it)) throw TypeError$1(OBJECT_ALREADY_INITIALIZED);
+      if (store.has(it)) throw new TypeError$1(OBJECT_ALREADY_INITIALIZED);
       metadata.facade = it;
       store.set(it, metadata);
       return metadata;
@@ -689,7 +658,7 @@
     var STATE = sharedKey$1('state');
     hiddenKeys$3[STATE] = true;
     set = function (it, metadata) {
-      if (hasOwn$4(it, STATE)) throw TypeError$1(OBJECT_ALREADY_INITIALIZED);
+      if (hasOwn$4(it, STATE)) throw new TypeError$1(OBJECT_ALREADY_INITIALIZED);
       metadata.facade = it;
       createNonEnumerableProperty$1(it, STATE, metadata);
       return metadata;
@@ -710,33 +679,38 @@
     getterFor: getterFor
   };
 
+  var uncurryThis$c = functionUncurryThis;
   var fails$a = fails$h;
   var isCallable$4 = isCallable$c;
   var hasOwn$3 = hasOwnProperty_1;
-  var DESCRIPTORS$3 = descriptors;
+  var DESCRIPTORS$4 = descriptors;
   var CONFIGURABLE_FUNCTION_NAME = functionName.CONFIGURABLE;
   var inspectSource$1 = inspectSource$2;
   var InternalStateModule = internalState;
 
   var enforceInternalState = InternalStateModule.enforce;
   var getInternalState = InternalStateModule.get;
+  var $String$1 = String;
   // eslint-disable-next-line es/no-object-defineproperty -- safe
   var defineProperty$2 = Object.defineProperty;
+  var stringSlice = uncurryThis$c(''.slice);
+  var replace$1 = uncurryThis$c(''.replace);
+  var join = uncurryThis$c([].join);
 
-  var CONFIGURABLE_LENGTH = DESCRIPTORS$3 && !fails$a(function () {
+  var CONFIGURABLE_LENGTH = DESCRIPTORS$4 && !fails$a(function () {
     return defineProperty$2(function () { /* empty */ }, 'length', { value: 8 }).length !== 8;
   });
 
   var TEMPLATE = String(String).split('String');
 
   var makeBuiltIn$1 = makeBuiltIn$2.exports = function (value, name, options) {
-    if (String(name).slice(0, 7) === 'Symbol(') {
-      name = '[' + String(name).replace(/^Symbol\(([^)]*)\)/, '$1') + ']';
+    if (stringSlice($String$1(name), 0, 7) === 'Symbol(') {
+      name = '[' + replace$1($String$1(name), /^Symbol\(([^)]*)\).*$/, '$1') + ']';
     }
     if (options && options.getter) name = 'get ' + name;
     if (options && options.setter) name = 'set ' + name;
     if (!hasOwn$3(value, 'name') || (CONFIGURABLE_FUNCTION_NAME && value.name !== name)) {
-      if (DESCRIPTORS$3) defineProperty$2(value, 'name', { value: name, configurable: true });
+      if (DESCRIPTORS$4) defineProperty$2(value, 'name', { value: name, configurable: true });
       else value.name = name;
     }
     if (CONFIGURABLE_LENGTH && options && hasOwn$3(options, 'arity') && value.length !== options.arity) {
@@ -744,13 +718,13 @@
     }
     try {
       if (options && hasOwn$3(options, 'constructor') && options.constructor) {
-        if (DESCRIPTORS$3) defineProperty$2(value, 'prototype', { writable: false });
+        if (DESCRIPTORS$4) defineProperty$2(value, 'prototype', { writable: false });
       // in V8 ~ Chrome 53, prototypes of some methods, like `Array.prototype.values`, are non-writable
       } else if (value.prototype) value.prototype = undefined;
     } catch (error) { /* empty */ }
     var state = enforceInternalState(value);
     if (!hasOwn$3(state, 'source')) {
-      state.source = TEMPLATE.join(typeof name == 'string' ? name : '');
+      state.source = join(TEMPLATE, typeof name == 'string' ? name : '');
     } return value;
   };
 
@@ -760,9 +734,11 @@
     return isCallable$4(this) && getInternalState(this).source || inspectSource$1(this);
   }, 'toString');
 
+  var makeBuiltInExports = makeBuiltIn$2.exports;
+
   var isCallable$3 = isCallable$c;
   var definePropertyModule$3 = objectDefineProperty;
-  var makeBuiltIn = makeBuiltIn$2.exports;
+  var makeBuiltIn = makeBuiltInExports;
   var defineGlobalProperty$1 = defineGlobalProperty$3;
 
   var defineBuiltIn$3 = function (O, key, value, options) {
@@ -813,15 +789,15 @@
 
   var toIntegerOrInfinity$2 = toIntegerOrInfinity$3;
 
-  var max$3 = Math.max;
+  var max$2 = Math.max;
   var min$2 = Math.min;
 
   // Helper for a popular repeating case of the spec:
   // Let integer be ? ToInteger(index).
   // If integer < 0, let result be max((length + integer), 0); else let result be min(integer, length).
-  var toAbsoluteIndex$4 = function (index, length) {
+  var toAbsoluteIndex$3 = function (index, length) {
     var integer = toIntegerOrInfinity$2(index);
-    return integer < 0 ? max$3(integer + length, 0) : min$2(integer, length);
+    return integer < 0 ? max$2(integer + length, 0) : min$2(integer, length);
   };
 
   var toIntegerOrInfinity$1 = toIntegerOrInfinity$3;
@@ -831,34 +807,36 @@
   // `ToLength` abstract operation
   // https://tc39.es/ecma262/#sec-tolength
   var toLength$1 = function (argument) {
-    return argument > 0 ? min$1(toIntegerOrInfinity$1(argument), 0x1FFFFFFFFFFFFF) : 0; // 2 ** 53 - 1 == 9007199254740991
+    var len = toIntegerOrInfinity$1(argument);
+    return len > 0 ? min$1(len, 0x1FFFFFFFFFFFFF) : 0; // 2 ** 53 - 1 == 9007199254740991
   };
 
   var toLength = toLength$1;
 
   // `LengthOfArrayLike` abstract operation
   // https://tc39.es/ecma262/#sec-lengthofarraylike
-  var lengthOfArrayLike$7 = function (obj) {
+  var lengthOfArrayLike$6 = function (obj) {
     return toLength(obj.length);
   };
 
   var toIndexedObject$3 = toIndexedObject$5;
-  var toAbsoluteIndex$3 = toAbsoluteIndex$4;
-  var lengthOfArrayLike$6 = lengthOfArrayLike$7;
+  var toAbsoluteIndex$2 = toAbsoluteIndex$3;
+  var lengthOfArrayLike$5 = lengthOfArrayLike$6;
 
   // `Array.prototype.{ indexOf, includes }` methods implementation
   var createMethod$2 = function (IS_INCLUDES) {
     return function ($this, el, fromIndex) {
       var O = toIndexedObject$3($this);
-      var length = lengthOfArrayLike$6(O);
-      var index = toAbsoluteIndex$3(fromIndex, length);
+      var length = lengthOfArrayLike$5(O);
+      if (length === 0) return !IS_INCLUDES && -1;
+      var index = toAbsoluteIndex$2(fromIndex, length);
       var value;
       // Array#includes uses SameValueZero equality algorithm
       // eslint-disable-next-line no-self-compare -- NaN check
-      if (IS_INCLUDES && el != el) while (length > index) {
+      if (IS_INCLUDES && el !== el) while (length > index) {
         value = O[index++];
         // eslint-disable-next-line no-self-compare -- NaN check
-        if (value != value) return true;
+        if (value !== value) return true;
       // Array#indexOf ignores holes, Array#includes - not
       } else for (;length > index; index++) {
         if ((IS_INCLUDES || index in O) && O[index] === el) return IS_INCLUDES || index || 0;
@@ -875,13 +853,13 @@
     indexOf: createMethod$2(false)
   };
 
-  var uncurryThis$a = functionUncurryThis;
+  var uncurryThis$b = functionUncurryThis;
   var hasOwn$2 = hasOwnProperty_1;
   var toIndexedObject$2 = toIndexedObject$5;
   var indexOf = arrayIncludes.indexOf;
   var hiddenKeys$2 = hiddenKeys$4;
 
-  var push$2 = uncurryThis$a([].push);
+  var push$2 = uncurryThis$b([].push);
 
   var objectKeysInternal = function (object, names) {
     var O = toIndexedObject$2(object);
@@ -924,13 +902,13 @@
   // eslint-disable-next-line es/no-object-getownpropertysymbols -- safe
   objectGetOwnPropertySymbols.f = Object.getOwnPropertySymbols;
 
-  var getBuiltIn$2 = getBuiltIn$5;
-  var uncurryThis$9 = functionUncurryThis;
+  var getBuiltIn$2 = getBuiltIn$4;
+  var uncurryThis$a = functionUncurryThis;
   var getOwnPropertyNamesModule = objectGetOwnPropertyNames;
   var getOwnPropertySymbolsModule$1 = objectGetOwnPropertySymbols;
   var anObject$4 = anObject$6;
 
-  var concat$1 = uncurryThis$9([].concat);
+  var concat$1 = uncurryThis$a([].concat);
 
   // all object keys, includes non-enumerable and symbols
   var ownKeys$1 = getBuiltIn$2('Reflect', 'ownKeys') || function ownKeys(it) {
@@ -963,8 +941,8 @@
 
   var isForced$1 = function (feature, detection) {
     var value = data[normalize(feature)];
-    return value == POLYFILL ? true
-      : value == NATIVE ? false
+    return value === POLYFILL ? true
+      : value === NATIVE ? false
       : isCallable$2(detection) ? fails$9(detection)
       : !!detection;
   };
@@ -1012,7 +990,7 @@
     } else if (STATIC) {
       target = global$2[TARGET] || defineGlobalProperty(TARGET, {});
     } else {
-      target = (global$2[TARGET] || {}).prototype;
+      target = global$2[TARGET] && global$2[TARGET].prototype;
     }
     if (target) for (key in source) {
       sourceProperty = source[key];
@@ -1034,27 +1012,30 @@
     }
   };
 
-  var uncurryThis$8 = functionUncurryThis;
-  var aCallable$1 = aCallable$3;
-  var NATIVE_BIND = functionBindNative;
-
-  var bind$1 = uncurryThis$8(uncurryThis$8.bind);
-
-  // optional / simple context binding
-  var functionBindContext = function (fn, that) {
-    aCallable$1(fn);
-    return that === undefined ? fn : NATIVE_BIND ? bind$1(fn, that) : function (/* ...args */) {
-      return fn.apply(that, arguments);
-    };
-  };
-
   var classof$4 = classofRaw$2;
 
   // `IsArray` abstract operation
   // https://tc39.es/ecma262/#sec-isarray
   // eslint-disable-next-line es/no-array-isarray -- safe
   var isArray$4 = Array.isArray || function isArray(argument) {
-    return classof$4(argument) == 'Array';
+    return classof$4(argument) === 'Array';
+  };
+
+  var $TypeError$2 = TypeError;
+  var MAX_SAFE_INTEGER = 0x1FFFFFFFFFFFFF; // 2 ** 53 - 1 == 9007199254740991
+
+  var doesNotExceedSafeInteger$2 = function (it) {
+    if (it > MAX_SAFE_INTEGER) throw $TypeError$2('Maximum allowed index exceeded');
+    return it;
+  };
+
+  var DESCRIPTORS$3 = descriptors;
+  var definePropertyModule$1 = objectDefineProperty;
+  var createPropertyDescriptor = createPropertyDescriptor$3;
+
+  var createProperty$3 = function (object, key, value) {
+    if (DESCRIPTORS$3) definePropertyModule$1.f(object, key, createPropertyDescriptor(0, value));
+    else object[key] = value;
   };
 
   var wellKnownSymbol$6 = wellKnownSymbol$8;
@@ -1068,14 +1049,14 @@
 
   var TO_STRING_TAG_SUPPORT$2 = toStringTagSupport;
   var isCallable$1 = isCallable$c;
-  var classofRaw = classofRaw$2;
+  var classofRaw$1 = classofRaw$2;
   var wellKnownSymbol$5 = wellKnownSymbol$8;
 
   var TO_STRING_TAG = wellKnownSymbol$5('toStringTag');
   var $Object = Object;
 
   // ES3 wrong here
-  var CORRECT_ARGUMENTS = classofRaw(function () { return arguments; }()) == 'Arguments';
+  var CORRECT_ARGUMENTS = classofRaw$1(function () { return arguments; }()) === 'Arguments';
 
   // fallback for IE11 Script Access Denied error
   var tryGet = function (it, key) {
@@ -1085,35 +1066,34 @@
   };
 
   // getting tag from ES6+ `Object.prototype.toString`
-  var classof$3 = TO_STRING_TAG_SUPPORT$2 ? classofRaw : function (it) {
+  var classof$3 = TO_STRING_TAG_SUPPORT$2 ? classofRaw$1 : function (it) {
     var O, tag, result;
     return it === undefined ? 'Undefined' : it === null ? 'Null'
       // @@toStringTag case
       : typeof (tag = tryGet(O = $Object(it), TO_STRING_TAG)) == 'string' ? tag
       // builtinTag case
-      : CORRECT_ARGUMENTS ? classofRaw(O)
+      : CORRECT_ARGUMENTS ? classofRaw$1(O)
       // ES3 arguments fallback
-      : (result = classofRaw(O)) == 'Object' && isCallable$1(O.callee) ? 'Arguments' : result;
+      : (result = classofRaw$1(O)) === 'Object' && isCallable$1(O.callee) ? 'Arguments' : result;
   };
 
-  var uncurryThis$7 = functionUncurryThis;
+  var uncurryThis$9 = functionUncurryThis;
   var fails$8 = fails$h;
   var isCallable = isCallable$c;
   var classof$2 = classof$3;
-  var getBuiltIn$1 = getBuiltIn$5;
+  var getBuiltIn$1 = getBuiltIn$4;
   var inspectSource = inspectSource$2;
 
   var noop = function () { /* empty */ };
-  var empty = [];
   var construct = getBuiltIn$1('Reflect', 'construct');
   var constructorRegExp = /^\s*(?:class|function)\b/;
-  var exec = uncurryThis$7(constructorRegExp.exec);
-  var INCORRECT_TO_STRING = !constructorRegExp.exec(noop);
+  var exec = uncurryThis$9(constructorRegExp.exec);
+  var INCORRECT_TO_STRING = !constructorRegExp.test(noop);
 
   var isConstructorModern = function isConstructor(argument) {
     if (!isCallable(argument)) return false;
     try {
-      construct(noop, empty, argument);
+      construct(noop, [], argument);
       return true;
     } catch (error) {
       return false;
@@ -1155,7 +1135,7 @@
   var wellKnownSymbol$4 = wellKnownSymbol$8;
 
   var SPECIES$2 = wellKnownSymbol$4('species');
-  var $Array$2 = Array;
+  var $Array$1 = Array;
 
   // a part of `ArraySpeciesCreate` abstract operation
   // https://tc39.es/ecma262/#sec-arrayspeciescreate
@@ -1164,12 +1144,12 @@
     if (isArray$3(originalArray)) {
       C = originalArray.constructor;
       // cross-realm fallback
-      if (isConstructor$1(C) && (C === $Array$2 || isArray$3(C.prototype))) C = undefined;
+      if (isConstructor$1(C) && (C === $Array$1 || isArray$3(C.prototype))) C = undefined;
       else if (isObject$2(C)) {
         C = C[SPECIES$2];
         if (C === null) C = undefined;
       }
-    } return C === undefined ? $Array$2 : C;
+    } return C === undefined ? $Array$1 : C;
   };
 
   var arraySpeciesConstructor = arraySpeciesConstructor$1;
@@ -1180,31 +1160,133 @@
     return new (arraySpeciesConstructor(originalArray))(length === 0 ? 0 : length);
   };
 
+  var fails$7 = fails$h;
+  var wellKnownSymbol$3 = wellKnownSymbol$8;
+  var V8_VERSION$1 = engineV8Version;
+
+  var SPECIES$1 = wellKnownSymbol$3('species');
+
+  var arrayMethodHasSpeciesSupport$4 = function (METHOD_NAME) {
+    // We can't use this feature detection in V8 since it causes
+    // deoptimization and serious performance degradation
+    // https://github.com/zloirock/core-js/issues/677
+    return V8_VERSION$1 >= 51 || !fails$7(function () {
+      var array = [];
+      var constructor = array.constructor = {};
+      constructor[SPECIES$1] = function () {
+        return { foo: 1 };
+      };
+      return array[METHOD_NAME](Boolean).foo !== 1;
+    });
+  };
+
+  var $$9 = _export;
+  var fails$6 = fails$h;
+  var isArray$2 = isArray$4;
+  var isObject$1 = isObject$8;
+  var toObject$4 = toObject$6;
+  var lengthOfArrayLike$4 = lengthOfArrayLike$6;
+  var doesNotExceedSafeInteger$1 = doesNotExceedSafeInteger$2;
+  var createProperty$2 = createProperty$3;
+  var arraySpeciesCreate$2 = arraySpeciesCreate$3;
+  var arrayMethodHasSpeciesSupport$3 = arrayMethodHasSpeciesSupport$4;
+  var wellKnownSymbol$2 = wellKnownSymbol$8;
+  var V8_VERSION = engineV8Version;
+
+  var IS_CONCAT_SPREADABLE = wellKnownSymbol$2('isConcatSpreadable');
+
+  // We can't use this feature detection in V8 since it causes
+  // deoptimization and serious performance degradation
+  // https://github.com/zloirock/core-js/issues/679
+  var IS_CONCAT_SPREADABLE_SUPPORT = V8_VERSION >= 51 || !fails$6(function () {
+    var array = [];
+    array[IS_CONCAT_SPREADABLE] = false;
+    return array.concat()[0] !== array;
+  });
+
+  var isConcatSpreadable = function (O) {
+    if (!isObject$1(O)) return false;
+    var spreadable = O[IS_CONCAT_SPREADABLE];
+    return spreadable !== undefined ? !!spreadable : isArray$2(O);
+  };
+
+  var FORCED$3 = !IS_CONCAT_SPREADABLE_SUPPORT || !arrayMethodHasSpeciesSupport$3('concat');
+
+  // `Array.prototype.concat` method
+  // https://tc39.es/ecma262/#sec-array.prototype.concat
+  // with adding support of @@isConcatSpreadable and @@species
+  $$9({ target: 'Array', proto: true, arity: 1, forced: FORCED$3 }, {
+    // eslint-disable-next-line no-unused-vars -- required for `.length`
+    concat: function concat(arg) {
+      var O = toObject$4(this);
+      var A = arraySpeciesCreate$2(O, 0);
+      var n = 0;
+      var i, k, length, len, E;
+      for (i = -1, length = arguments.length; i < length; i++) {
+        E = i === -1 ? O : arguments[i];
+        if (isConcatSpreadable(E)) {
+          len = lengthOfArrayLike$4(E);
+          doesNotExceedSafeInteger$1(n + len);
+          for (k = 0; k < len; k++, n++) if (k in E) createProperty$2(A, n, E[k]);
+        } else {
+          doesNotExceedSafeInteger$1(n + 1);
+          createProperty$2(A, n++, E);
+        }
+      }
+      A.length = n;
+      return A;
+    }
+  });
+
+  var classofRaw = classofRaw$2;
+  var uncurryThis$8 = functionUncurryThis;
+
+  var functionUncurryThisClause = function (fn) {
+    // Nashorn bug:
+    //   https://github.com/zloirock/core-js/issues/1128
+    //   https://github.com/zloirock/core-js/issues/1130
+    if (classofRaw(fn) === 'Function') return uncurryThis$8(fn);
+  };
+
+  var uncurryThis$7 = functionUncurryThisClause;
+  var aCallable$1 = aCallable$3;
+  var NATIVE_BIND = functionBindNative;
+
+  var bind$1 = uncurryThis$7(uncurryThis$7.bind);
+
+  // optional / simple context binding
+  var functionBindContext = function (fn, that) {
+    aCallable$1(fn);
+    return that === undefined ? fn : NATIVE_BIND ? bind$1(fn, that) : function (/* ...args */) {
+      return fn.apply(that, arguments);
+    };
+  };
+
   var bind = functionBindContext;
   var uncurryThis$6 = functionUncurryThis;
   var IndexedObject$1 = indexedObject;
-  var toObject$4 = toObject$6;
-  var lengthOfArrayLike$5 = lengthOfArrayLike$7;
-  var arraySpeciesCreate$2 = arraySpeciesCreate$3;
+  var toObject$3 = toObject$6;
+  var lengthOfArrayLike$3 = lengthOfArrayLike$6;
+  var arraySpeciesCreate$1 = arraySpeciesCreate$3;
 
   var push$1 = uncurryThis$6([].push);
 
   // `Array.prototype.{ forEach, map, filter, some, every, find, findIndex, filterReject }` methods implementation
   var createMethod$1 = function (TYPE) {
-    var IS_MAP = TYPE == 1;
-    var IS_FILTER = TYPE == 2;
-    var IS_SOME = TYPE == 3;
-    var IS_EVERY = TYPE == 4;
-    var IS_FIND_INDEX = TYPE == 6;
-    var IS_FILTER_REJECT = TYPE == 7;
-    var NO_HOLES = TYPE == 5 || IS_FIND_INDEX;
+    var IS_MAP = TYPE === 1;
+    var IS_FILTER = TYPE === 2;
+    var IS_SOME = TYPE === 3;
+    var IS_EVERY = TYPE === 4;
+    var IS_FIND_INDEX = TYPE === 6;
+    var IS_FILTER_REJECT = TYPE === 7;
+    var NO_HOLES = TYPE === 5 || IS_FIND_INDEX;
     return function ($this, callbackfn, that, specificCreate) {
-      var O = toObject$4($this);
+      var O = toObject$3($this);
       var self = IndexedObject$1(O);
+      var length = lengthOfArrayLike$3(self);
       var boundFunction = bind(callbackfn, that);
-      var length = lengthOfArrayLike$5(self);
       var index = 0;
-      var create = specificCreate || arraySpeciesCreate$2;
+      var create = specificCreate || arraySpeciesCreate$1;
       var target = IS_MAP ? create($this, length) : IS_FILTER || IS_FILTER_REJECT ? create($this, 0) : undefined;
       var value, result;
       for (;length > index; index++) if (NO_HOLES || index in self) {
@@ -1268,7 +1350,7 @@
 
   var DESCRIPTORS$2 = descriptors;
   var V8_PROTOTYPE_DEFINE_BUG = v8PrototypeDefineBug;
-  var definePropertyModule$1 = objectDefineProperty;
+  var definePropertyModule = objectDefineProperty;
   var anObject$3 = anObject$6;
   var toIndexedObject$1 = toIndexedObject$5;
   var objectKeys$1 = objectKeys$2;
@@ -1283,16 +1365,15 @@
     var length = keys.length;
     var index = 0;
     var key;
-    while (length > index) definePropertyModule$1.f(O, key = keys[index++], props[key]);
+    while (length > index) definePropertyModule.f(O, key = keys[index++], props[key]);
     return O;
   };
 
-  var getBuiltIn = getBuiltIn$5;
+  var getBuiltIn = getBuiltIn$4;
 
   var html$1 = getBuiltIn('document', 'documentElement');
 
   /* global ActiveXObject -- old IE, WSH */
-
   var anObject$2 = anObject$6;
   var definePropertiesModule = objectDefineProperties;
   var enumBugKeys = enumBugKeys$3;
@@ -1376,16 +1457,16 @@
     return Properties === undefined ? result : definePropertiesModule.f(result, Properties);
   };
 
-  var wellKnownSymbol$3 = wellKnownSymbol$8;
+  var wellKnownSymbol$1 = wellKnownSymbol$8;
   var create = objectCreate;
   var defineProperty$1 = objectDefineProperty.f;
 
-  var UNSCOPABLES = wellKnownSymbol$3('unscopables');
+  var UNSCOPABLES = wellKnownSymbol$1('unscopables');
   var ArrayPrototype = Array.prototype;
 
   // Array.prototype[@@unscopables]
   // https://tc39.es/ecma262/#sec-array.prototype-@@unscopables
-  if (ArrayPrototype[UNSCOPABLES] == undefined) {
+  if (ArrayPrototype[UNSCOPABLES] === undefined) {
     defineProperty$1(ArrayPrototype, UNSCOPABLES, {
       configurable: true,
       value: create(null)
@@ -1397,7 +1478,7 @@
     ArrayPrototype[UNSCOPABLES][key] = true;
   };
 
-  var $$9 = _export;
+  var $$8 = _export;
   var $find = arrayIteration.find;
   var addToUnscopables$1 = addToUnscopables$2;
 
@@ -1405,11 +1486,12 @@
   var SKIPS_HOLES = true;
 
   // Shouldn't skip holes
+  // eslint-disable-next-line es/no-array-prototype-find -- testing
   if (FIND in []) Array(1)[FIND](function () { SKIPS_HOLES = false; });
 
   // `Array.prototype.find` method
   // https://tc39.es/ecma262/#sec-array.prototype.find
-  $$9({ target: 'Array', proto: true, forced: SKIPS_HOLES }, {
+  $$8({ target: 'Array', proto: true, forced: SKIPS_HOLES }, {
     find: function find(callbackfn /* , that = undefined */) {
       return $find(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
     }
@@ -1418,158 +1500,187 @@
   // https://tc39.es/ecma262/#sec-array.prototype-@@unscopables
   addToUnscopables$1(FIND);
 
-  var TO_STRING_TAG_SUPPORT$1 = toStringTagSupport;
-  var classof$1 = classof$3;
+  var $$7 = _export;
+  var $includes = arrayIncludes.includes;
+  var fails$5 = fails$h;
+  var addToUnscopables = addToUnscopables$2;
 
-  // `Object.prototype.toString` method implementation
-  // https://tc39.es/ecma262/#sec-object.prototype.tostring
-  var objectToString = TO_STRING_TAG_SUPPORT$1 ? {}.toString : function toString() {
-    return '[object ' + classof$1(this) + ']';
-  };
+  // FF99+ bug
+  var BROKEN_ON_SPARSE = fails$5(function () {
+    // eslint-disable-next-line es/no-array-prototype-includes -- detection
+    return !Array(1).includes();
+  });
 
-  var TO_STRING_TAG_SUPPORT = toStringTagSupport;
-  var defineBuiltIn$1 = defineBuiltIn$3;
-  var toString$4 = objectToString;
+  // `Array.prototype.includes` method
+  // https://tc39.es/ecma262/#sec-array.prototype.includes
+  $$7({ target: 'Array', proto: true, forced: BROKEN_ON_SPARSE }, {
+    includes: function includes(el /* , fromIndex = 0 */) {
+      return $includes(this, el, arguments.length > 1 ? arguments[1] : undefined);
+    }
+  });
 
-  // `Object.prototype.toString` method
-  // https://tc39.es/ecma262/#sec-object.prototype.tostring
-  if (!TO_STRING_TAG_SUPPORT) {
-    defineBuiltIn$1(Object.prototype, 'toString', toString$4, { unsafe: true });
-  }
+  // https://tc39.es/ecma262/#sec-array.prototype-@@unscopables
+  addToUnscopables('includes');
 
-  var fails$7 = fails$h;
-  var wellKnownSymbol$2 = wellKnownSymbol$8;
-  var V8_VERSION$1 = engineV8Version;
+  var fails$4 = fails$h;
 
-  var SPECIES$1 = wellKnownSymbol$2('species');
-
-  var arrayMethodHasSpeciesSupport$4 = function (METHOD_NAME) {
-    // We can't use this feature detection in V8 since it causes
-    // deoptimization and serious performance degradation
-    // https://github.com/zloirock/core-js/issues/677
-    return V8_VERSION$1 >= 51 || !fails$7(function () {
-      var array = [];
-      var constructor = array.constructor = {};
-      constructor[SPECIES$1] = function () {
-        return { foo: 1 };
-      };
-      return array[METHOD_NAME](Boolean).foo !== 1;
+  var arrayMethodIsStrict$2 = function (METHOD_NAME, argument) {
+    var method = [][METHOD_NAME];
+    return !!method && fails$4(function () {
+      // eslint-disable-next-line no-useless-call -- required for testing
+      method.call(null, argument || function () { return 1; }, 1);
     });
   };
 
-  var $$8 = _export;
-  var $map = arrayIteration.map;
-  var arrayMethodHasSpeciesSupport$3 = arrayMethodHasSpeciesSupport$4;
+  /* eslint-disable es/no-array-prototype-indexof -- required for testing */
+  var $$6 = _export;
+  var uncurryThis$5 = functionUncurryThisClause;
+  var $indexOf = arrayIncludes.indexOf;
+  var arrayMethodIsStrict$1 = arrayMethodIsStrict$2;
 
-  var HAS_SPECIES_SUPPORT$2 = arrayMethodHasSpeciesSupport$3('map');
+  var nativeIndexOf = uncurryThis$5([].indexOf);
+
+  var NEGATIVE_ZERO = !!nativeIndexOf && 1 / nativeIndexOf([1], 1, -0) < 0;
+  var FORCED$2 = NEGATIVE_ZERO || !arrayMethodIsStrict$1('indexOf');
+
+  // `Array.prototype.indexOf` method
+  // https://tc39.es/ecma262/#sec-array.prototype.indexof
+  $$6({ target: 'Array', proto: true, forced: FORCED$2 }, {
+    indexOf: function indexOf(searchElement /* , fromIndex = 0 */) {
+      var fromIndex = arguments.length > 1 ? arguments[1] : undefined;
+      return NEGATIVE_ZERO
+        // convert -0 to +0
+        ? nativeIndexOf(this, searchElement, fromIndex) || 0
+        : $indexOf(this, searchElement, fromIndex);
+    }
+  });
+
+  var $$5 = _export;
+  var $map = arrayIteration.map;
+  var arrayMethodHasSpeciesSupport$2 = arrayMethodHasSpeciesSupport$4;
+
+  var HAS_SPECIES_SUPPORT$2 = arrayMethodHasSpeciesSupport$2('map');
 
   // `Array.prototype.map` method
   // https://tc39.es/ecma262/#sec-array.prototype.map
   // with adding support of @@species
-  $$8({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT$2 }, {
+  $$5({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT$2 }, {
     map: function map(callbackfn /* , thisArg */) {
       return $map(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
     }
   });
 
+  var uncurryThis$4 = functionUncurryThis;
+
+  var arraySlice$1 = uncurryThis$4([].slice);
+
+  var $$4 = _export;
+  var isArray$1 = isArray$4;
+  var isConstructor = isConstructor$2;
+  var isObject = isObject$8;
+  var toAbsoluteIndex$1 = toAbsoluteIndex$3;
+  var lengthOfArrayLike$2 = lengthOfArrayLike$6;
+  var toIndexedObject = toIndexedObject$5;
+  var createProperty$1 = createProperty$3;
+  var wellKnownSymbol = wellKnownSymbol$8;
+  var arrayMethodHasSpeciesSupport$1 = arrayMethodHasSpeciesSupport$4;
+  var nativeSlice = arraySlice$1;
+
+  var HAS_SPECIES_SUPPORT$1 = arrayMethodHasSpeciesSupport$1('slice');
+
+  var SPECIES = wellKnownSymbol('species');
+  var $Array = Array;
+  var max$1 = Math.max;
+
+  // `Array.prototype.slice` method
+  // https://tc39.es/ecma262/#sec-array.prototype.slice
+  // fallback for not array-like ES3 strings and DOM objects
+  $$4({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT$1 }, {
+    slice: function slice(start, end) {
+      var O = toIndexedObject(this);
+      var length = lengthOfArrayLike$2(O);
+      var k = toAbsoluteIndex$1(start, length);
+      var fin = toAbsoluteIndex$1(end === undefined ? length : end, length);
+      // inline `ArraySpeciesCreate` for usage native `Array#slice` where it's possible
+      var Constructor, result, n;
+      if (isArray$1(O)) {
+        Constructor = O.constructor;
+        // cross-realm fallback
+        if (isConstructor(Constructor) && (Constructor === $Array || isArray$1(Constructor.prototype))) {
+          Constructor = undefined;
+        } else if (isObject(Constructor)) {
+          Constructor = Constructor[SPECIES];
+          if (Constructor === null) Constructor = undefined;
+        }
+        if (Constructor === $Array || Constructor === undefined) {
+          return nativeSlice(O, k, fin);
+        }
+      }
+      result = new (Constructor === undefined ? $Array : Constructor)(max$1(fin - k, 0));
+      for (n = 0; k < fin; k++, n++) if (k in O) createProperty$1(result, n, O[k]);
+      result.length = n;
+      return result;
+    }
+  });
+
   var tryToString = tryToString$2;
 
-  var $TypeError$2 = TypeError;
+  var $TypeError$1 = TypeError;
 
   var deletePropertyOrThrow$2 = function (O, P) {
-    if (!delete O[P]) throw $TypeError$2('Cannot delete property ' + tryToString(P) + ' of ' + tryToString(O));
+    if (!delete O[P]) throw new $TypeError$1('Cannot delete property ' + tryToString(P) + ' of ' + tryToString(O));
   };
 
-  var classof = classof$3;
+  var classof$1 = classof$3;
 
   var $String = String;
 
-  var toString$3 = function (argument) {
-    if (classof(argument) === 'Symbol') throw TypeError('Cannot convert a Symbol value to a string');
+  var toString$4 = function (argument) {
+    if (classof$1(argument) === 'Symbol') throw new TypeError('Cannot convert a Symbol value to a string');
     return $String(argument);
   };
 
-  var toPropertyKey = toPropertyKey$3;
-  var definePropertyModule = objectDefineProperty;
-  var createPropertyDescriptor = createPropertyDescriptor$3;
-
-  var createProperty$4 = function (object, key, value) {
-    var propertyKey = toPropertyKey(key);
-    if (propertyKey in object) definePropertyModule.f(object, propertyKey, createPropertyDescriptor(0, value));
-    else object[propertyKey] = value;
-  };
-
-  var toAbsoluteIndex$2 = toAbsoluteIndex$4;
-  var lengthOfArrayLike$4 = lengthOfArrayLike$7;
-  var createProperty$3 = createProperty$4;
-
-  var $Array$1 = Array;
-  var max$2 = Math.max;
-
-  var arraySliceSimple = function (O, start, end) {
-    var length = lengthOfArrayLike$4(O);
-    var k = toAbsoluteIndex$2(start, length);
-    var fin = toAbsoluteIndex$2(end === undefined ? length : end, length);
-    var result = $Array$1(max$2(fin - k, 0));
-    for (var n = 0; k < fin; k++, n++) createProperty$3(result, n, O[k]);
-    result.length = n;
-    return result;
-  };
-
-  var arraySlice$1 = arraySliceSimple;
+  var arraySlice = arraySlice$1;
 
   var floor = Math.floor;
 
-  var mergeSort = function (array, comparefn) {
+  var sort = function (array, comparefn) {
     var length = array.length;
-    var middle = floor(length / 2);
-    return length < 8 ? insertionSort(array, comparefn) : merge(
-      array,
-      mergeSort(arraySlice$1(array, 0, middle), comparefn),
-      mergeSort(arraySlice$1(array, middle), comparefn),
-      comparefn
-    );
-  };
 
-  var insertionSort = function (array, comparefn) {
-    var length = array.length;
-    var i = 1;
-    var element, j;
+    if (length < 8) {
+      // insertion sort
+      var i = 1;
+      var element, j;
 
-    while (i < length) {
-      j = i;
-      element = array[i];
-      while (j && comparefn(array[j - 1], element) > 0) {
-        array[j] = array[--j];
+      while (i < length) {
+        j = i;
+        element = array[i];
+        while (j && comparefn(array[j - 1], element) > 0) {
+          array[j] = array[--j];
+        }
+        if (j !== i++) array[j] = element;
       }
-      if (j !== i++) array[j] = element;
-    } return array;
+    } else {
+      // merge sort
+      var middle = floor(length / 2);
+      var left = sort(arraySlice(array, 0, middle), comparefn);
+      var right = sort(arraySlice(array, middle), comparefn);
+      var llength = left.length;
+      var rlength = right.length;
+      var lindex = 0;
+      var rindex = 0;
+
+      while (lindex < llength || rindex < rlength) {
+        array[lindex + rindex] = (lindex < llength && rindex < rlength)
+          ? comparefn(left[lindex], right[rindex]) <= 0 ? left[lindex++] : right[rindex++]
+          : lindex < llength ? left[lindex++] : right[rindex++];
+      }
+    }
+
+    return array;
   };
 
-  var merge = function (array, left, right, comparefn) {
-    var llength = left.length;
-    var rlength = right.length;
-    var lindex = 0;
-    var rindex = 0;
-
-    while (lindex < llength || rindex < rlength) {
-      array[lindex + rindex] = (lindex < llength && rindex < rlength)
-        ? comparefn(left[lindex], right[rindex]) <= 0 ? left[lindex++] : right[rindex++]
-        : lindex < llength ? left[lindex++] : right[rindex++];
-    } return array;
-  };
-
-  var arraySort = mergeSort;
-
-  var fails$6 = fails$h;
-
-  var arrayMethodIsStrict$2 = function (METHOD_NAME, argument) {
-    var method = [][METHOD_NAME];
-    return !!method && fails$6(function () {
-      // eslint-disable-next-line no-useless-call -- required for testing
-      method.call(null, argument || function () { return 1; }, 1);
-    });
-  };
+  var arraySort = sort;
 
   var userAgent$1 = engineUserAgent;
 
@@ -1587,37 +1698,37 @@
 
   var engineWebkitVersion = !!webkit && +webkit[1];
 
-  var $$7 = _export;
-  var uncurryThis$5 = functionUncurryThis;
+  var $$3 = _export;
+  var uncurryThis$3 = functionUncurryThis;
   var aCallable = aCallable$3;
-  var toObject$3 = toObject$6;
-  var lengthOfArrayLike$3 = lengthOfArrayLike$7;
+  var toObject$2 = toObject$6;
+  var lengthOfArrayLike$1 = lengthOfArrayLike$6;
   var deletePropertyOrThrow$1 = deletePropertyOrThrow$2;
-  var toString$2 = toString$3;
-  var fails$5 = fails$h;
+  var toString$3 = toString$4;
+  var fails$3 = fails$h;
   var internalSort = arraySort;
-  var arrayMethodIsStrict$1 = arrayMethodIsStrict$2;
+  var arrayMethodIsStrict = arrayMethodIsStrict$2;
   var FF = engineFfVersion;
   var IE_OR_EDGE = engineIsIeOrEdge;
   var V8 = engineV8Version;
   var WEBKIT = engineWebkitVersion;
 
   var test = [];
-  var nativeSort = uncurryThis$5(test.sort);
-  var push = uncurryThis$5(test.push);
+  var nativeSort = uncurryThis$3(test.sort);
+  var push = uncurryThis$3(test.push);
 
   // IE8-
-  var FAILS_ON_UNDEFINED = fails$5(function () {
+  var FAILS_ON_UNDEFINED = fails$3(function () {
     test.sort(undefined);
   });
   // V8 bug
-  var FAILS_ON_NULL = fails$5(function () {
+  var FAILS_ON_NULL = fails$3(function () {
     test.sort(null);
   });
   // Old WebKit
-  var STRICT_METHOD$1 = arrayMethodIsStrict$1('sort');
+  var STRICT_METHOD = arrayMethodIsStrict('sort');
 
-  var STABLE_SORT = !fails$5(function () {
+  var STABLE_SORT = !fails$3(function () {
     // feature detection can be too slow, so check engines versions
     if (V8) return V8 < 70;
     if (FF && FF > 3) return;
@@ -1652,29 +1763,29 @@
     return result !== 'DGBEFHACIJK';
   });
 
-  var FORCED$2 = FAILS_ON_UNDEFINED || !FAILS_ON_NULL || !STRICT_METHOD$1 || !STABLE_SORT;
+  var FORCED$1 = FAILS_ON_UNDEFINED || !FAILS_ON_NULL || !STRICT_METHOD || !STABLE_SORT;
 
   var getSortCompare = function (comparefn) {
     return function (x, y) {
       if (y === undefined) return -1;
       if (x === undefined) return 1;
       if (comparefn !== undefined) return +comparefn(x, y) || 0;
-      return toString$2(x) > toString$2(y) ? 1 : -1;
+      return toString$3(x) > toString$3(y) ? 1 : -1;
     };
   };
 
   // `Array.prototype.sort` method
   // https://tc39.es/ecma262/#sec-array.prototype.sort
-  $$7({ target: 'Array', proto: true, forced: FORCED$2 }, {
+  $$3({ target: 'Array', proto: true, forced: FORCED$1 }, {
     sort: function sort(comparefn) {
       if (comparefn !== undefined) aCallable(comparefn);
 
-      var array = toObject$3(this);
+      var array = toObject$2(this);
 
       if (STABLE_SORT) return comparefn === undefined ? nativeSort(array) : nativeSort(array, comparefn);
 
       var items = [];
-      var arrayLength = lengthOfArrayLike$3(array);
+      var arrayLength = lengthOfArrayLike$1(array);
       var itemsLength, index;
 
       for (index = 0; index < arrayLength; index++) {
@@ -1683,7 +1794,7 @@
 
       internalSort(items, getSortCompare(comparefn));
 
-      itemsLength = lengthOfArrayLike$3(items);
+      itemsLength = lengthOfArrayLike$1(items);
       index = 0;
 
       while (index < itemsLength) array[index] = items[index++];
@@ -1693,216 +1804,7 @@
     }
   });
 
-  var $TypeError$1 = TypeError;
-  var MAX_SAFE_INTEGER = 0x1FFFFFFFFFFFFF; // 2 ** 53 - 1 == 9007199254740991
-
-  var doesNotExceedSafeInteger$2 = function (it) {
-    if (it > MAX_SAFE_INTEGER) throw $TypeError$1('Maximum allowed index exceeded');
-    return it;
-  };
-
-  var $$6 = _export;
-  var fails$4 = fails$h;
-  var isArray$2 = isArray$4;
-  var isObject$1 = isObject$8;
-  var toObject$2 = toObject$6;
-  var lengthOfArrayLike$2 = lengthOfArrayLike$7;
-  var doesNotExceedSafeInteger$1 = doesNotExceedSafeInteger$2;
-  var createProperty$2 = createProperty$4;
-  var arraySpeciesCreate$1 = arraySpeciesCreate$3;
-  var arrayMethodHasSpeciesSupport$2 = arrayMethodHasSpeciesSupport$4;
-  var wellKnownSymbol$1 = wellKnownSymbol$8;
-  var V8_VERSION = engineV8Version;
-
-  var IS_CONCAT_SPREADABLE = wellKnownSymbol$1('isConcatSpreadable');
-
-  // We can't use this feature detection in V8 since it causes
-  // deoptimization and serious performance degradation
-  // https://github.com/zloirock/core-js/issues/679
-  var IS_CONCAT_SPREADABLE_SUPPORT = V8_VERSION >= 51 || !fails$4(function () {
-    var array = [];
-    array[IS_CONCAT_SPREADABLE] = false;
-    return array.concat()[0] !== array;
-  });
-
-  var SPECIES_SUPPORT = arrayMethodHasSpeciesSupport$2('concat');
-
-  var isConcatSpreadable = function (O) {
-    if (!isObject$1(O)) return false;
-    var spreadable = O[IS_CONCAT_SPREADABLE];
-    return spreadable !== undefined ? !!spreadable : isArray$2(O);
-  };
-
-  var FORCED$1 = !IS_CONCAT_SPREADABLE_SUPPORT || !SPECIES_SUPPORT;
-
-  // `Array.prototype.concat` method
-  // https://tc39.es/ecma262/#sec-array.prototype.concat
-  // with adding support of @@isConcatSpreadable and @@species
-  $$6({ target: 'Array', proto: true, arity: 1, forced: FORCED$1 }, {
-    // eslint-disable-next-line no-unused-vars -- required for `.length`
-    concat: function concat(arg) {
-      var O = toObject$2(this);
-      var A = arraySpeciesCreate$1(O, 0);
-      var n = 0;
-      var i, k, length, len, E;
-      for (i = -1, length = arguments.length; i < length; i++) {
-        E = i === -1 ? O : arguments[i];
-        if (isConcatSpreadable(E)) {
-          len = lengthOfArrayLike$2(E);
-          doesNotExceedSafeInteger$1(n + len);
-          for (k = 0; k < len; k++, n++) if (k in E) createProperty$2(A, n, E[k]);
-        } else {
-          doesNotExceedSafeInteger$1(n + 1);
-          createProperty$2(A, n++, E);
-        }
-      }
-      A.length = n;
-      return A;
-    }
-  });
-
-  var $$5 = _export;
-  var $includes = arrayIncludes.includes;
-  var fails$3 = fails$h;
-  var addToUnscopables = addToUnscopables$2;
-
-  // FF99+ bug
-  var BROKEN_ON_SPARSE = fails$3(function () {
-    return !Array(1).includes();
-  });
-
-  // `Array.prototype.includes` method
-  // https://tc39.es/ecma262/#sec-array.prototype.includes
-  $$5({ target: 'Array', proto: true, forced: BROKEN_ON_SPARSE }, {
-    includes: function includes(el /* , fromIndex = 0 */) {
-      return $includes(this, el, arguments.length > 1 ? arguments[1] : undefined);
-    }
-  });
-
-  // https://tc39.es/ecma262/#sec-array.prototype-@@unscopables
-  addToUnscopables('includes');
-
   var DESCRIPTORS$1 = descriptors;
-  var uncurryThis$4 = functionUncurryThis;
-  var call$1 = functionCall;
-  var fails$2 = fails$h;
-  var objectKeys = objectKeys$2;
-  var getOwnPropertySymbolsModule = objectGetOwnPropertySymbols;
-  var propertyIsEnumerableModule = objectPropertyIsEnumerable;
-  var toObject$1 = toObject$6;
-  var IndexedObject = indexedObject;
-
-  // eslint-disable-next-line es/no-object-assign -- safe
-  var $assign = Object.assign;
-  // eslint-disable-next-line es/no-object-defineproperty -- required for testing
-  var defineProperty = Object.defineProperty;
-  var concat = uncurryThis$4([].concat);
-
-  // `Object.assign` method
-  // https://tc39.es/ecma262/#sec-object.assign
-  var objectAssign = !$assign || fails$2(function () {
-    // should have correct order of operations (Edge bug)
-    if (DESCRIPTORS$1 && $assign({ b: 1 }, $assign(defineProperty({}, 'a', {
-      enumerable: true,
-      get: function () {
-        defineProperty(this, 'b', {
-          value: 3,
-          enumerable: false
-        });
-      }
-    }), { b: 2 })).b !== 1) return true;
-    // should work with symbols and should have deterministic property order (V8 bug)
-    var A = {};
-    var B = {};
-    // eslint-disable-next-line es/no-symbol -- safe
-    var symbol = Symbol();
-    var alphabet = 'abcdefghijklmnopqrst';
-    A[symbol] = 7;
-    alphabet.split('').forEach(function (chr) { B[chr] = chr; });
-    return $assign({}, A)[symbol] != 7 || objectKeys($assign({}, B)).join('') != alphabet;
-  }) ? function assign(target, source) { // eslint-disable-line no-unused-vars -- required for `.length`
-    var T = toObject$1(target);
-    var argumentsLength = arguments.length;
-    var index = 1;
-    var getOwnPropertySymbols = getOwnPropertySymbolsModule.f;
-    var propertyIsEnumerable = propertyIsEnumerableModule.f;
-    while (argumentsLength > index) {
-      var S = IndexedObject(arguments[index++]);
-      var keys = getOwnPropertySymbols ? concat(objectKeys(S), getOwnPropertySymbols(S)) : objectKeys(S);
-      var length = keys.length;
-      var j = 0;
-      var key;
-      while (length > j) {
-        key = keys[j++];
-        if (!DESCRIPTORS$1 || call$1(propertyIsEnumerable, S, key)) T[key] = S[key];
-      }
-    } return T;
-  } : $assign;
-
-  var $$4 = _export;
-  var assign = objectAssign;
-
-  // `Object.assign` method
-  // https://tc39.es/ecma262/#sec-object.assign
-  // eslint-disable-next-line es/no-object-assign -- required for testing
-  $$4({ target: 'Object', stat: true, arity: 2, forced: Object.assign !== assign }, {
-    assign: assign
-  });
-
-  var uncurryThis$3 = functionUncurryThis;
-
-  var arraySlice = uncurryThis$3([].slice);
-
-  var $$3 = _export;
-  var isArray$1 = isArray$4;
-  var isConstructor = isConstructor$2;
-  var isObject = isObject$8;
-  var toAbsoluteIndex$1 = toAbsoluteIndex$4;
-  var lengthOfArrayLike$1 = lengthOfArrayLike$7;
-  var toIndexedObject = toIndexedObject$5;
-  var createProperty$1 = createProperty$4;
-  var wellKnownSymbol = wellKnownSymbol$8;
-  var arrayMethodHasSpeciesSupport$1 = arrayMethodHasSpeciesSupport$4;
-  var nativeSlice = arraySlice;
-
-  var HAS_SPECIES_SUPPORT$1 = arrayMethodHasSpeciesSupport$1('slice');
-
-  var SPECIES = wellKnownSymbol('species');
-  var $Array = Array;
-  var max$1 = Math.max;
-
-  // `Array.prototype.slice` method
-  // https://tc39.es/ecma262/#sec-array.prototype.slice
-  // fallback for not array-like ES3 strings and DOM objects
-  $$3({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT$1 }, {
-    slice: function slice(start, end) {
-      var O = toIndexedObject(this);
-      var length = lengthOfArrayLike$1(O);
-      var k = toAbsoluteIndex$1(start, length);
-      var fin = toAbsoluteIndex$1(end === undefined ? length : end, length);
-      // inline `ArraySpeciesCreate` for usage native `Array#slice` where it's possible
-      var Constructor, result, n;
-      if (isArray$1(O)) {
-        Constructor = O.constructor;
-        // cross-realm fallback
-        if (isConstructor(Constructor) && (Constructor === $Array || isArray$1(Constructor.prototype))) {
-          Constructor = undefined;
-        } else if (isObject(Constructor)) {
-          Constructor = Constructor[SPECIES];
-          if (Constructor === null) Constructor = undefined;
-        }
-        if (Constructor === $Array || Constructor === undefined) {
-          return nativeSlice(O, k, fin);
-        }
-      }
-      result = new (Constructor === undefined ? $Array : Constructor)(max$1(fin - k, 0));
-      for (n = 0; k < fin; k++, n++) if (k in O) createProperty$1(result, n, O[k]);
-      result.length = n;
-      return result;
-    }
-  });
-
-  var DESCRIPTORS = descriptors;
   var isArray = isArray$4;
 
   var $TypeError = TypeError;
@@ -1910,7 +1812,7 @@
   var getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 
   // Safari < 13 does not throw an error in this case
-  var SILENT_ON_NON_WRITABLE_LENGTH_SET = DESCRIPTORS && !function () {
+  var SILENT_ON_NON_WRITABLE_LENGTH_SET = DESCRIPTORS$1 && !function () {
     // makes no sense without proper strict mode support
     if (this !== undefined) return true;
     try {
@@ -1923,21 +1825,21 @@
 
   var arraySetLength = SILENT_ON_NON_WRITABLE_LENGTH_SET ? function (O, length) {
     if (isArray(O) && !getOwnPropertyDescriptor(O, 'length').writable) {
-      throw $TypeError('Cannot set read only .length');
+      throw new $TypeError('Cannot set read only .length');
     } return O.length = length;
   } : function (O, length) {
     return O.length = length;
   };
 
   var $$2 = _export;
-  var toObject = toObject$6;
-  var toAbsoluteIndex = toAbsoluteIndex$4;
+  var toObject$1 = toObject$6;
+  var toAbsoluteIndex = toAbsoluteIndex$3;
   var toIntegerOrInfinity = toIntegerOrInfinity$3;
-  var lengthOfArrayLike = lengthOfArrayLike$7;
+  var lengthOfArrayLike = lengthOfArrayLike$6;
   var setArrayLength = arraySetLength;
   var doesNotExceedSafeInteger = doesNotExceedSafeInteger$2;
   var arraySpeciesCreate = arraySpeciesCreate$3;
-  var createProperty = createProperty$4;
+  var createProperty = createProperty$3;
   var deletePropertyOrThrow = deletePropertyOrThrow$2;
   var arrayMethodHasSpeciesSupport = arrayMethodHasSpeciesSupport$4;
 
@@ -1951,7 +1853,7 @@
   // with adding support of @@species
   $$2({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT }, {
     splice: function splice(start, deleteCount /* , ...items */) {
-      var O = toObject(this);
+      var O = toObject$1(this);
       var len = lengthOfArrayLike(O);
       var actualStart = toAbsoluteIndex(start, len);
       var argumentsLength = arguments.length;
@@ -1996,28 +1898,91 @@
     }
   });
 
-  /* eslint-disable es/no-array-prototype-indexof -- required for testing */
-  var $$1 = _export;
+  var DESCRIPTORS = descriptors;
   var uncurryThis$2 = functionUncurryThis;
-  var $indexOf = arrayIncludes.indexOf;
-  var arrayMethodIsStrict = arrayMethodIsStrict$2;
+  var call$1 = functionCall;
+  var fails$2 = fails$h;
+  var objectKeys = objectKeys$2;
+  var getOwnPropertySymbolsModule = objectGetOwnPropertySymbols;
+  var propertyIsEnumerableModule = objectPropertyIsEnumerable;
+  var toObject = toObject$6;
+  var IndexedObject = indexedObject;
 
-  var nativeIndexOf = uncurryThis$2([].indexOf);
+  // eslint-disable-next-line es/no-object-assign -- safe
+  var $assign = Object.assign;
+  // eslint-disable-next-line es/no-object-defineproperty -- required for testing
+  var defineProperty = Object.defineProperty;
+  var concat = uncurryThis$2([].concat);
 
-  var NEGATIVE_ZERO = !!nativeIndexOf && 1 / nativeIndexOf([1], 1, -0) < 0;
-  var STRICT_METHOD = arrayMethodIsStrict('indexOf');
+  // `Object.assign` method
+  // https://tc39.es/ecma262/#sec-object.assign
+  var objectAssign = !$assign || fails$2(function () {
+    // should have correct order of operations (Edge bug)
+    if (DESCRIPTORS && $assign({ b: 1 }, $assign(defineProperty({}, 'a', {
+      enumerable: true,
+      get: function () {
+        defineProperty(this, 'b', {
+          value: 3,
+          enumerable: false
+        });
+      }
+    }), { b: 2 })).b !== 1) return true;
+    // should work with symbols and should have deterministic property order (V8 bug)
+    var A = {};
+    var B = {};
+    // eslint-disable-next-line es/no-symbol -- safe
+    var symbol = Symbol('assign detection');
+    var alphabet = 'abcdefghijklmnopqrst';
+    A[symbol] = 7;
+    alphabet.split('').forEach(function (chr) { B[chr] = chr; });
+    return $assign({}, A)[symbol] !== 7 || objectKeys($assign({}, B)).join('') !== alphabet;
+  }) ? function assign(target, source) { // eslint-disable-line no-unused-vars -- required for `.length`
+    var T = toObject(target);
+    var argumentsLength = arguments.length;
+    var index = 1;
+    var getOwnPropertySymbols = getOwnPropertySymbolsModule.f;
+    var propertyIsEnumerable = propertyIsEnumerableModule.f;
+    while (argumentsLength > index) {
+      var S = IndexedObject(arguments[index++]);
+      var keys = getOwnPropertySymbols ? concat(objectKeys(S), getOwnPropertySymbols(S)) : objectKeys(S);
+      var length = keys.length;
+      var j = 0;
+      var key;
+      while (length > j) {
+        key = keys[j++];
+        if (!DESCRIPTORS || call$1(propertyIsEnumerable, S, key)) T[key] = S[key];
+      }
+    } return T;
+  } : $assign;
 
-  // `Array.prototype.indexOf` method
-  // https://tc39.es/ecma262/#sec-array.prototype.indexof
-  $$1({ target: 'Array', proto: true, forced: NEGATIVE_ZERO || !STRICT_METHOD }, {
-    indexOf: function indexOf(searchElement /* , fromIndex = 0 */) {
-      var fromIndex = arguments.length > 1 ? arguments[1] : undefined;
-      return NEGATIVE_ZERO
-        // convert -0 to +0
-        ? nativeIndexOf(this, searchElement, fromIndex) || 0
-        : $indexOf(this, searchElement, fromIndex);
-    }
+  var $$1 = _export;
+  var assign = objectAssign;
+
+  // `Object.assign` method
+  // https://tc39.es/ecma262/#sec-object.assign
+  // eslint-disable-next-line es/no-object-assign -- required for testing
+  $$1({ target: 'Object', stat: true, arity: 2, forced: Object.assign !== assign }, {
+    assign: assign
   });
+
+  var TO_STRING_TAG_SUPPORT$1 = toStringTagSupport;
+  var classof = classof$3;
+
+  // `Object.prototype.toString` method implementation
+  // https://tc39.es/ecma262/#sec-object.prototype.tostring
+  var objectToString = TO_STRING_TAG_SUPPORT$1 ? {}.toString : function toString() {
+    return '[object ' + classof(this) + ']';
+  };
+
+  var TO_STRING_TAG_SUPPORT = toStringTagSupport;
+  var defineBuiltIn$1 = defineBuiltIn$3;
+  var toString$2 = objectToString;
+
+  // `Object.prototype.toString` method
+  // https://tc39.es/ecma262/#sec-object.prototype.tostring
+  if (!TO_STRING_TAG_SUPPORT) {
+    defineBuiltIn$1(Object.prototype, 'toString', toString$2, { unsafe: true });
+  }
 
   // a string of all valid unicode whitespaces
   var whitespaces$2 = '\u0009\u000A\u000B\u000C\u000D\u0020\u00A0\u1680\u2000\u2001\u2002' +
@@ -2025,20 +1990,19 @@
 
   var uncurryThis$1 = functionUncurryThis;
   var requireObjectCoercible = requireObjectCoercible$3;
-  var toString$1 = toString$3;
+  var toString$1 = toString$4;
   var whitespaces$1 = whitespaces$2;
 
   var replace = uncurryThis$1(''.replace);
-  var whitespace = '[' + whitespaces$1 + ']';
-  var ltrim = RegExp('^' + whitespace + whitespace + '*');
-  var rtrim = RegExp(whitespace + whitespace + '*$');
+  var ltrim = RegExp('^[' + whitespaces$1 + ']+');
+  var rtrim = RegExp('(^|[^' + whitespaces$1 + '])[' + whitespaces$1 + ']+$');
 
   // `String.prototype.{ trim, trimStart, trimEnd, trimLeft, trimRight }` methods implementation
   var createMethod = function (TYPE) {
     return function ($this) {
       var string = toString$1(requireObjectCoercible($this));
       if (TYPE & 1) string = replace(string, ltrim, '');
-      if (TYPE & 2) string = replace(string, rtrim, '');
+      if (TYPE & 2) string = replace(string, rtrim, '$1');
       return string;
     };
   };
@@ -2058,7 +2022,7 @@
   var global$1 = global$b;
   var fails$1 = fails$h;
   var uncurryThis = functionUncurryThis;
-  var toString = toString$3;
+  var toString = toString$4;
   var trim = stringTrim.trim;
   var whitespaces = whitespaces$2;
 
@@ -2075,7 +2039,7 @@
   var numberParseFloat = FORCED ? function parseFloat(string) {
     var trimmedString = trim(toString(string));
     var result = $parseFloat$1(trimmedString);
-    return result === 0 && charAt(trimmedString, 0) == '-' ? -0 : result;
+    return result === 0 && charAt(trimmedString, 0) === '-' ? -0 : result;
   } : $parseFloat$1;
 
   var $ = _export;
@@ -2083,7 +2047,7 @@
 
   // `parseFloat` method
   // https://tc39.es/ecma262/#sec-parsefloat-string
-  $({ global: true, forced: parseFloat != $parseFloat }, {
+  $({ global: true, forced: parseFloat !== $parseFloat }, {
     parseFloat: $parseFloat
   });
 
@@ -2121,7 +2085,7 @@
   var PROPER_FUNCTION_NAME = functionName.PROPER;
   var defineBuiltIn = defineBuiltIn$3;
   var anObject = anObject$6;
-  var $toString = toString$3;
+  var $toString = toString$4;
   var fails = fails$h;
   var getRegExpFlags = regexpGetFlags;
 
@@ -2129,14 +2093,14 @@
   var RegExpPrototype = RegExp.prototype;
   var nativeToString = RegExpPrototype[TO_STRING];
 
-  var NOT_GENERIC = fails(function () { return nativeToString.call({ source: 'a', flags: 'b' }) != '/a/b'; });
+  var NOT_GENERIC = fails(function () { return nativeToString.call({ source: 'a', flags: 'b' }) !== '/a/b'; });
   // FF44- RegExp#toString has a wrong name
-  var INCORRECT_NAME = PROPER_FUNCTION_NAME && nativeToString.name != TO_STRING;
+  var INCORRECT_NAME = PROPER_FUNCTION_NAME && nativeToString.name !== TO_STRING;
 
   // `RegExp.prototype.toString` method
   // https://tc39.es/ecma262/#sec-regexp.prototype.tostring
   if (NOT_GENERIC || INCORRECT_NAME) {
-    defineBuiltIn(RegExp.prototype, TO_STRING, function toString() {
+    defineBuiltIn(RegExpPrototype, TO_STRING, function toString() {
       var R = anObject(this);
       var pattern = $toString(R.source);
       var flags = $toString(getRegExpFlags(R));
@@ -2147,13 +2111,12 @@
   /**
    * @author Nadim Basalamah <dimbslmh@gmail.com>
    * @version: v1.1.0
-   * https://github.com/dimbslmh/bootstrap-table/tree/master/src/extensions/multiple-sort/bootstrap-table-multiple-sort.js
-   * Modification: ErwannNevou <https://github.com/ErwannNevou>
+   * @update: ErwannNevou <https://github.com/ErwannNevou>
    */
 
   var isSingleSort = false;
-  var Utils = $__default["default"].fn.bootstrapTable.utils;
-  $__default["default"].extend($__default["default"].fn.bootstrapTable.defaults.icons, {
+  var Utils = $$a.fn.bootstrapTable.utils;
+  Object.assign($$a.fn.bootstrapTable.defaults.icons, {
     plus: {
       bootstrap3: 'glyphicon-plus',
       bootstrap4: 'fa-plus',
@@ -2163,7 +2126,7 @@
       foundation: 'fa-plus',
       bulma: 'fa-plus',
       'bootstrap-table': 'icon-plus'
-    }[$__default["default"].fn.bootstrapTable.theme] || 'fa-clock',
+    }[$$a.fn.bootstrapTable.theme] || 'fa-clock',
     minus: {
       bootstrap3: 'glyphicon-minus',
       bootstrap4: 'fa-minus',
@@ -2173,7 +2136,7 @@
       foundation: 'fa-minus',
       bulma: 'fa-minus',
       'bootstrap-table': 'icon-minus'
-    }[$__default["default"].fn.bootstrapTable.theme] || 'fa-clock',
+    }[$$a.fn.bootstrapTable.theme] || 'fa-clock',
     sort: {
       bootstrap3: 'glyphicon-sort',
       bootstrap4: 'fa-sort',
@@ -2183,7 +2146,7 @@
       foundation: 'fa-sort',
       bulma: 'fa-sort',
       'bootstrap-table': 'icon-sort-amount-asc'
-    }[$__default["default"].fn.bootstrapTable.theme] || 'fa-clock'
+    }[$$a.fn.bootstrapTable.theme] || 'fa-clock'
   });
   var theme = {
     bootstrap3: {
@@ -2242,15 +2205,15 @@
         multipleSortSelect: '<select class="%s %s browser-default">'
       }
     }
-  }[$__default["default"].fn.bootstrapTable.theme];
+  }[$$a.fn.bootstrapTable.theme];
   var showSortModal = function showSortModal(that) {
     var _selector = that.sortModalSelector;
     var _id = "#".concat(_selector);
     var o = that.options;
-    if (!$__default["default"](_id).hasClass('modal')) {
+    if (!$$a(_id).hasClass('modal')) {
       var sModal = Utils.sprintf(theme.html.multipleSortModal, _selector, _selector, _selector, that.options.formatMultipleSort(), Utils.sprintf(that.constants.html.icon, o.iconsPrefix, o.icons.plus), that.options.formatAddLevel(), Utils.sprintf(that.constants.html.icon, o.iconsPrefix, o.icons.minus), that.options.formatDeleteLevel(), that.options.formatColumn(), that.options.formatOrder(), that.options.formatCancel(), that.options.formatSort());
-      $__default["default"]('body').append($__default["default"](sModal));
-      that.$sortModal = $__default["default"](_id);
+      $$a('body').append($$a(sModal));
+      that.$sortModal = $$a(_id);
       var $rows = that.$sortModal.find('tbody > tr');
       that.$sortModal.off('click', '#add').on('click', '#add', function () {
         var total = that.$sortModal.find('.multi-sort-name:first option').length;
@@ -2275,8 +2238,8 @@
         var $alert = that.$sortModal.find('div.alert');
         var fields = [];
         var results = [];
-        var sortPriority = $__default["default"].map($rows, function (row) {
-          var $row = $__default["default"](row);
+        var sortPriority = $$a.map($rows, function (row) {
+          var $row = $$a(row);
           var name = $row.find('.multi-sort-name').val();
           var order = $row.find('.multi-sort-order').val();
           fields.push(name);
@@ -2294,13 +2257,13 @@
         if (results.length > 0) {
           if ($alert.length === 0) {
             $alert = "<div class=\"alert alert-danger\" role=\"alert\"><strong>".concat(that.options.formatDuplicateAlertTitle(), "</strong> ").concat(that.options.formatDuplicateAlertDescription(), "</div>");
-            $__default["default"]($alert).insertBefore(that.$sortModal.find('.bars'));
+            $$a($alert).insertBefore(that.$sortModal.find('.bars'));
           }
         } else {
           if ($alert.length === 1) {
-            $__default["default"]($alert).remove();
+            $$a($alert).remove();
           }
-          if (['bootstrap3', 'bootstrap4', 'bootstrap5'].includes($__default["default"].fn.bootstrapTable.theme)) {
+          if (['bootstrap3', 'bootstrap4', 'bootstrap5'].includes($$a.fn.bootstrapTable.theme)) {
             that.$sortModal.modal('hide');
           }
           that.multiSort(sortPriority);
@@ -2326,9 +2289,9 @@
       that.setButtonStates();
     }
   };
-  $__default["default"].fn.bootstrapTable.methods.push('multipleSort');
-  $__default["default"].fn.bootstrapTable.methods.push('multiSort');
-  $__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, {
+  $$a.fn.bootstrapTable.methods.push('multipleSort');
+  $$a.fn.bootstrapTable.methods.push('multiSort');
+  Object.assign($$a.fn.bootstrapTable.defaults, {
     showMultiSort: false,
     showMultiSortButton: true,
     multiSortStrictSort: false,
@@ -2337,10 +2300,10 @@
       return false;
     }
   });
-  $__default["default"].extend($__default["default"].fn.bootstrapTable.Constructor.EVENTS, {
+  Object.assign($$a.fn.bootstrapTable.events, {
     'multiple-sort.bs.table': 'onMultipleSort'
   });
-  $__default["default"].extend($__default["default"].fn.bootstrapTable.locales, {
+  Object.assign($$a.fn.bootstrapTable.locales, {
     formatMultipleSort: function formatMultipleSort() {
       return 'Multiple Sort';
     },
@@ -2381,8 +2344,8 @@
       };
     }
   });
-  $__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales);
-  var BootstrapTable = $__default["default"].fn.bootstrapTable.Constructor;
+  Object.assign($$a.fn.bootstrapTable.defaults, $$a.fn.bootstrapTable.locales);
+  var BootstrapTable = $$a.fn.bootstrapTable.Constructor;
   var _initToolbar = BootstrapTable.prototype.initToolbar;
   var _destroy = BootstrapTable.prototype.destroy;
   BootstrapTable.prototype.initToolbar = function () {
@@ -2393,7 +2356,7 @@
     var sortModalId = "#".concat(sortModalSelector);
     var $multiSortBtn = this.$toolbar.find('div.multi-sort');
     var o = this.options;
-    this.$sortModal = $__default["default"](sortModalId);
+    this.$sortModal = $$a(sortModalId);
     this.sortModalSelector = sortModalSelector;
     if (that.options.sortPriority !== null) {
       that.onMultipleSort();
@@ -2418,33 +2381,33 @@
     }
     if (this.options.showMultiSort) {
       if (!$multiSortBtn.length && this.options.showMultiSortButton) {
-        if ($__default["default"].fn.bootstrapTable.theme === 'semantic') {
+        if ($$a.fn.bootstrapTable.theme === 'semantic') {
           this.$toolbar.find('.multi-sort').on('click', function () {
-            $__default["default"](sortModalId).modal('show');
+            $$a(sortModalId).modal('show');
           });
-        } else if ($__default["default"].fn.bootstrapTable.theme === 'materialize') {
+        } else if ($$a.fn.bootstrapTable.theme === 'materialize') {
           this.$toolbar.find('.multi-sort').on('click', function () {
-            $__default["default"](sortModalId).modal();
+            $$a(sortModalId).modal();
           });
-        } else if ($__default["default"].fn.bootstrapTable.theme === 'bootstrap-table') {
+        } else if ($$a.fn.bootstrapTable.theme === 'bootstrap-table') {
           this.$toolbar.find('.multi-sort').on('click', function () {
-            $__default["default"](sortModalId).addClass('show');
+            $$a(sortModalId).addClass('show');
           });
-        } else if ($__default["default"].fn.bootstrapTable.theme === 'foundation') {
+        } else if ($$a.fn.bootstrapTable.theme === 'foundation') {
           this.$toolbar.find('.multi-sort').on('click', function () {
             if (!_this.foundationModal) {
               // eslint-disable-next-line no-undef
-              _this.foundationModal = new Foundation.Reveal($__default["default"](sortModalId));
+              _this.foundationModal = new Foundation.Reveal($$a(sortModalId));
             }
             _this.foundationModal.open();
           });
-        } else if ($__default["default"].fn.bootstrapTable.theme === 'bulma') {
+        } else if ($$a.fn.bootstrapTable.theme === 'bulma') {
           this.$toolbar.find('.multi-sort').on('click', function () {
-            $__default["default"]('html').toggleClass('is-clipped');
-            $__default["default"](sortModalId).toggleClass('is-active');
-            $__default["default"]('button[data-close]').one('click', function () {
-              $__default["default"]('html').toggleClass('is-clipped');
-              $__default["default"](sortModalId).toggleClass('is-active');
+            $$a('html').toggleClass('is-clipped');
+            $$a(sortModalId).toggleClass('is-active');
+            $$a('button[data-close]').one('click', function () {
+              $$a('html').toggleClass('is-clipped');
+              $$a(sortModalId).toggleClass('is-active');
             });
           });
         }
@@ -2514,8 +2477,8 @@
         var order = that.options.sortPriority[i].sortOrder === 'desc' ? -1 : 1;
         var aa = Utils.getItemField(a, fieldName);
         var bb = Utils.getItemField(b, fieldName);
-        var value1 = $__default["default"].fn.bootstrapTable.utils.calculateObjectValue(that.header, sorterName, [aa, bb]);
-        var value2 = $__default["default"].fn.bootstrapTable.utils.calculateObjectValue(that.header, sorterName, [bb, aa]);
+        var value1 = $$a.fn.bootstrapTable.utils.calculateObjectValue(that.header, sorterName, [aa, bb]);
+        var value2 = $$a.fn.bootstrapTable.utils.calculateObjectValue(that.header, sorterName, [bb, aa]);
         if (value1 !== undefined && value2 !== undefined) {
           arr1.push(order * value1);
           arr2.push(order * value2);
@@ -2523,7 +2486,7 @@
         }
         if (aa === undefined || aa === null) aa = '';
         if (bb === undefined || bb === null) bb = '';
-        if ($__default["default"].isNumeric(aa) && $__default["default"].isNumeric(bb)) {
+        if ($$a.isNumeric(aa) && $$a.isNumeric(bb)) {
           aa = parseFloat(aa);
           bb = parseFloat(bb);
         } else {
@@ -2549,16 +2512,16 @@
   };
   BootstrapTable.prototype.addLevel = function (index, sortPriority) {
     var text = index === 0 ? this.options.formatSortBy() : this.options.formatThenBy();
-    this.$sortModal.find('tbody').append($__default["default"]('<tr>').append($__default["default"]('<td>').text(text)).append($__default["default"]('<td>').append($__default["default"](Utils.sprintf(theme.html.multipleSortSelect, this.constants.classes.paginationDropdown, 'multi-sort-name')))).append($__default["default"]('<td>').append($__default["default"](Utils.sprintf(theme.html.multipleSortSelect, this.constants.classes.paginationDropdown, 'multi-sort-order')))));
+    this.$sortModal.find('tbody').append($$a('<tr>').append($$a('<td>').text(text)).append($$a('<td>').append($$a(Utils.sprintf(theme.html.multipleSortSelect, this.constants.classes.paginationDropdown, 'multi-sort-name')))).append($$a('<td>').append($$a(Utils.sprintf(theme.html.multipleSortSelect, this.constants.classes.paginationDropdown, 'multi-sort-order')))));
     var $multiSortName = this.$sortModal.find('.multi-sort-name').last();
     var $multiSortOrder = this.$sortModal.find('.multi-sort-order').last();
-    $__default["default"].each(this.columns, function (i, column) {
+    $$a.each(this.columns, function (i, column) {
       if (column.sortable === false || column.visible === false) {
         return true;
       }
       $multiSortName.append("<option value=\"".concat(column.field, "\">").concat(column.title, "</option>"));
     });
-    $__default["default"].each(this.options.formatSortOrders(), function (value, order) {
+    $$a.each(this.options.formatSortOrders(), function (value, order) {
       $multiSortOrder.append("<option value=\"".concat(value, "\">").concat(order, "</option>"));
     });
     if (sortPriority !== undefined) {
@@ -2571,8 +2534,8 @@
     var headers = that.$header.find('th');
     for (var i = 0; i < headers.length; i++) {
       for (var c = 0; c < that.options.sortPriority.length; c++) {
-        if ($__default["default"](headers[i]).data('field') === that.options.sortPriority[c].sortName) {
-          $__default["default"](headers[i]).find('.sortable').removeClass('desc asc').addClass(that.options.sortPriority[c].sortOrder);
+        if ($$a(headers[i]).data('field') === that.options.sortPriority[c].sortName) {
+          $$a(headers[i]).find('.sortable').removeClass('desc asc').addClass(that.options.sortPriority[c].sortOrder);
         }
       }
     }
@@ -2601,7 +2564,7 @@
       var queryParams = this.options.queryParams;
       this.options.queryParams = function (params) {
         params.multiSort = _this2.options.sortPriority;
-        return $__default["default"].fn.bootstrapTable.utils.calculateObjectValue(_this2.options, queryParams, [params]);
+        return $$a.fn.bootstrapTable.utils.calculateObjectValue(_this2.options, queryParams, [params]);
       };
       isSingleSort = false;
       this.initServer(this.options.silentSort);

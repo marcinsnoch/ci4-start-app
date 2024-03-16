@@ -12,13 +12,13 @@
         "plugins": "node ./resources/npm/Publish.js -v"
     },
     "dependencies": {
-        "@fortawesome/fontawesome-free": "^5.15.4",
+        "@fortawesome/fontawesome-free": "^6.5.1",
         "admin-lte": "^3.2.0",
         "bootstrap": "^4.6.2",
-        "bootstrap-table": "^1.21.2",
+        "bootstrap-table": "^1.22.3",
         "icheck-bootstrap": "^3.0.1",
-        "jquery": "^3.6.3",
-        "jquery-validation": "^1.19.5",
+        "jquery": "^3.7.1",
+        "jquery-validation": "^1.20.0",
         "toastr": "^2.1.4"
     },
     "devDependencies": {
@@ -38,7 +38,7 @@
         "gulp-rename": "^2.0.0",
         "gulp-sass": "^5.1.0",
         "gulp-sourcemaps": "^3.0.0",
-        "mjml": "^4.13.0",
-        "sass": "^1.57.1"
+        "mjml": "^4.15.3",
+        "sass": "^1.72.0"
     }
 }

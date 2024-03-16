@@ -10,14 +10,17 @@ class AppEmail
     private $twig;
     private $appEmail;
     private $appName;
+    private $myConfig;
 
     public function __construct(Twig $twig)
     {
+        $this->myConfig = new MyConfig();
+        
         $this->twig = $twig;
-        $config = new MyConfig();
-
-        $this->appEmail = $config->appEmail;
-        $this->appName = $config->appName;
+        $this->twig->addGlobal('config', $this->myConfig);
+        
+        $this->appEmail = $this->myConfig->appEmail;
+        $this->appName = $this->myConfig->appName;
     }
 
     public function sendEmail($to, $subject, $body = '', $cc = false)

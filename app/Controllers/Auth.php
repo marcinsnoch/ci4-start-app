@@ -19,13 +19,13 @@ class Auth extends BaseController
             $user = UserModel::where('email', $this->request->getPost('email'))->first();
             // Check if user exist
             if (!$user) {
-                alertError('Login or password incorrect!', null, ['positionClass' => 'toast-top-center']);
+                alertError('Login or password incorrect!');
 
                 return redirect()->to('login');
             }
             // Check if account is activated
             if ($user->token !== null) {
-                alertError('Your account is not active.', null, ['positionClass' => 'toast-top-center']);
+                alertError('Your account is not active.');
 
                 return redirect()->to('login');
             }
@@ -36,7 +36,7 @@ class Auth extends BaseController
 
                 return redirect()->to('home')->withCookies();
             }
-            alertError('Login or password incorrect!', null, ['positionClass' => 'toast-top-center']);
+            alertError('Login or password incorrect!');
         }
 
         return $this->twig->display('auth/login');
@@ -55,7 +55,7 @@ class Auth extends BaseController
             $appmail = new AppEmail($this->twig);
             $appmail->resetPasswordEmail($user);
 
-            alertSuccess('Please check your email inbox.', null, ['positionClass' => 'toast-top-center']);
+            alertSuccess('Please check your email inbox.');
 
             return redirect()->to('login');
         }
@@ -81,7 +81,7 @@ class Auth extends BaseController
             $appmail = new AppEmail($this->twig);
             $appmail->passwordChanged($user);
 
-            alertSuccess('Password changed!', null, ['positionClass' => 'toast-top-center']);
+            alertSuccess('Password changed!');
 
             return redirect()->to('login');
         }
@@ -124,7 +124,7 @@ class Auth extends BaseController
             $appmail = new AppEmail($this->twig);
             $appmail->activationEmail($user);
 
-            alertSuccess('Account created successfully.<br> Please check your email inbox.', null, ['positionClass' => 'toast-top-center']);
+            alertSuccess('Account created successfully.<br> Please check your email inbox.');
 
             return redirect()->to('login');
         }
@@ -144,12 +144,12 @@ class Auth extends BaseController
         $user = UserModel::where('token', $this->request->getGet('token'))->first();
 
         if (!$user) {
-            alertError('Some error occurred!', null, ['positionClass' => 'toast-top-center']);
+            alertError('Some error occurred!');
         } else {
             // active account
             $user->update(['token' => null]);
 
-            alertSuccess('Account activated successfully! Please check Your email inbox.', null, ['positionClass' => 'toast-top-center']);
+            alertSuccess('Account activated successfully! Please check Your email inbox.');
 
             // email to user
             $appmail = new AppEmail($this->twig);
@@ -184,7 +184,7 @@ class Auth extends BaseController
     {
         session()->set([
             'id' => $user->id,
-            'name' => $user->name,
+            'name' => $user->full_name,
             'email' => $user->email,
             'isLoggedIn' => true,
         ]);
