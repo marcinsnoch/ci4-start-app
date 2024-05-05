@@ -1,5 +1,12 @@
 @import "https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700";
 
+main {
+    padding-bottom: 40px;
+    > .container {
+        padding-top: 80px;
+    }
+}
+
 label.is-invalid {
     color: red;
 }

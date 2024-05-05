@@ -5,7 +5,7 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
-$routes->addRedirect('/', 'home');
+$routes->get('/', 'Home::index');
 $routes->get('terms-and-conditions', 'Terms::index');
 $routes->get('logout', 'Auth::logout');
 

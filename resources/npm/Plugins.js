@@ -1,10 +1,5 @@
 const PluginsDir = "public/plugins/";
 const Plugins = [
-    // AdminLTE
-    {
-        from: "node_modules/admin-lte/dist",
-        toPluginsDir: "admin-lte"
-    },
     // Bootstrap
     {
         from: "node_modules/bootstrap/dist",
@@ -15,10 +10,10 @@ const Plugins = [
         from: "node_modules/bootstrap-table/dist",
         toPluginsDir: "bootstrap-table"
     },
-    // Font Awesome
+    // Bootstrao Icons
     {
-        from: "node_modules/@fortawesome/fontawesome-free/css",
-        toPluginsDir: "fontawesome-free/css"
+        from: "node_modules/bootstrap-icons/font/",
+        toPluginsDir: "bootstrap-icons/"
     },
     {
         from: "node_modules/@fortawesome/fontawesome-free/webfonts",
