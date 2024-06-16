@@ -35,7 +35,7 @@ abstract class BaseController extends Controller
      * class instantiation. These helpers will be available
      * to all other controllers that extend BaseController.
      *
-     * @var array
+     * @var list<string>
      */
     protected $helpers = [];
 
@@ -43,16 +43,18 @@ abstract class BaseController extends Controller
      * Be sure to declare properties for any property fetch you initialized.
      * The creation of dynamic property is deprecated in PHP 8.2.
      */
-    // protected $session;
+
+    protected $session;
+    protected $twig;
+    protected $myConfig;
+    protected $twigConfig;
+    protected $validation;
 
     /**
      * @return void
      */
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
-    	// Load helpers
-    	$this->helpers = array_merge($this->helpers, ['alerts', 'app', 'cookie', 'form', 'url']);
-
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
 
@@ -66,10 +68,10 @@ abstract class BaseController extends Controller
 
     private function initTwig()
     {
-        $twigConfig = config('Twig');
-        $this->twig = new Twig($twigConfig->config);
+        $this->twigConfig = config('Twig');
+        $this->twig = new Twig($this->twigConfig->config);
         $this->twig->addGlobal('myConfig', $this->myConfig);
         $this->twig->addGlobal('session', $this->session);
-        $this->twig->addGlobal('validation', validation_errors());
+        $this->twig->addGlobal('validation', $this->validation);
 	}
 }

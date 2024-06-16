@@ -8,5 +8,5 @@ class MyConfig extends BaseConfig
 {
     public string $appName = 'MyApplication';
     public string $appEmail = 'webmaster@example.com';
-    public bool $register = false;
+    public bool $register = true;
 }

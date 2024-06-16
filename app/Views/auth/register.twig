@@ -3,73 +3,70 @@
 {% block title %}Zarejestruj się{% endblock %}
 
 {% block content %}
-    <div class="register-box">
-        <div class="register-logo">
-            {{ config.item('app_name') }}
-        </div>
-        <div class="card">
-            <div class="card-body register-card-body">
-                <p class="login-box-msg">Register a new membership</p>
-                {{ form_open() }}
-                <div class="input-group mb-3">
-                    <input type="text" name="name" class="form-control{{ validation.hasError('name') ? ' is-invalid'}}" value="{{ set_value('name') }}" placeholder="Full name">
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-user"></span>
-                        </div>
-                    </div>
-                    {% if validation.hasError('name') %}
-                        <span class="error invalid-feedback">{{ validation.getError('name') }}</span>
-                    {% endif %}
+<div class="w-100 m-auto">
+    <div class="container">
+        <div class="row">
+            <div class="col-6 offset-3">
+                <div class="text-center">
+                    {{ myConfig.appName|default('n/a') }}
                 </div>
-                <div class="input-group mb-3">
-                    <input type="text" name="email" class="form-control{{ validation.hasError('email') ? ' is-invalid'}}" value="{{ set_value('email') }}" placeholder="Email">
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-envelope"></span>
+                <div class="card">
+                    <div class="card-body">
+                        <p class="card-text">Register a new membership</p>
+                        {{ form_open() }}
+                        <div class="input-group mb-3">
+                            <input type="text" name="name" class="form-control{{ validation.hasError('name') ? ' is-invalid'}}" value="{{ set_value('name') }}" placeholder="Full name">
+                            <span class="input-group-text">
+                                <span class="bi bi-person"></span>
+                            </span>
+                            {% if validation.hasError('name') %}
+                                <span class="error invalid-feedback">{{ validation.getError('name') }}</span>
+                            {% endif %}
                         </div>
-                    </div>
-                    {% if validation.hasError('email') %}
-                        <span class="error invalid-feedback">{{ validation.getError('email') }}</span>
-                    {% endif %}
-                </div>
-                <div class="input-group mb-3">
-                    <input type="password" name="password" class="form-control{{ validation.hasError('password') ? ' is-invalid'}}" value="{{ set_value('password') }}" placeholder="Password">
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-lock"></span>
+                        <div class="input-group mb-3">
+                            <input type="text" name="email" class="form-control{{ validation.hasError('email') ? ' is-invalid'}}" value="{{ set_value('email') }}" placeholder="Email">
+                            <span class="input-group-text">
+                                <span class="bi bi-envelope"></span>
+                            </span>
+                            {% if validation.hasError('email') %}
+                                <span class="error invalid-feedback">{{ validation.getError('email') }}</span>
+                            {% endif %}
                         </div>
-                    </div>
-                    {% if validation.hasError('password') %}
-                        <span class="error invalid-feedback">{{ validation.getError('password') }}</span>
-                    {% endif %}
-                </div>
-                <div class="input-group mb-3">
-                    <input type="password" name="confirm_password" class="form-control{{ validation.hasError('confirm_password') ? ' is-invalid'}}" value="{{ set_value('confirm_password') }}" placeholder="Retype password">
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-lock"></span>
+                        <div class="input-group mb-3">
+                            <input type="password" name="password" class="form-control{{ validation.hasError('password') ? ' is-invalid'}}" value="{{ set_value('password') }}" placeholder="Password">
+                            <span class="input-group-text">
+                                <span class="bi bi-asterisk"></span>
+                            </span>
+                            {% if validation.hasError('password') %}
+                                <span class="error invalid-feedback">{{ validation.getError('password') }}</span>
+                            {% endif %}
                         </div>
-                    </div>
-                    {% if validation.hasError('confirm_password') %}
-                        <span class="error invalid-feedback">{{ validation.getError('confirm_password') }}</span>
-                    {% endif %}
-                </div>
-                <div class="row">
-                    <div class="col-8">
-                        <div class="icheck-primary">
-                            <input type="checkbox" name="terms" id="agreeTerms" value="1" {{ set_checkbox('terms', '1') }}>
-                            <label for="agreeTerms">
-                                I agree to the <a href="{{ site_url('terms-and-conditions') }}">terms and conditions</a>
-                            </label>
+                        <div class="input-group mb-3">
+                            <input type="password" name="confirm_password" class="form-control{{ validation.hasError('confirm_password') ? ' is-invalid'}}" value="{{ set_value('confirm_password') }}" placeholder="Retype password">
+                            <span class="input-group-text">
+                                <span class="bi bi-asterisk"></span>
+                            </span>
+                            {% if validation.hasError('confirm_password') %}
+                                <span class="error invalid-feedback">{{ validation.getError('confirm_password') }}</span>
+                            {% endif %}
                         </div>
-                    </div>
-                    <div class="col-4">
-                        <button type="submit" name="register" class="btn btn-primary btn-block" value="true">Register</button>
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="icheck-primary">
+                                    <input type="checkbox" name="terms" id="agreeTerms" value="1" {{ set_checkbox('terms', '1') }}>
+                                    <label for="agreeTerms">
+                                        I agree to the <a href="{{ site_url('terms-and-conditions') }}">terms and conditions</a>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <button type="submit" name="register" class="btn btn-primary btn-block float-end" value="true">Register</button>
+                            </div>
+                        </div>
+                        {{ form_close() }}
+                        <a href="{{ site_url('login') }}" class="text-center">I already have a membership</a>
                     </div>
                 </div>
-                {{ form_close() }}
-                <a href="{{ site_url('login') }}" class="text-center">I already have a membership</a>
             </div>
         </div>
     </div>

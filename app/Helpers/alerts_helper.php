@@ -36,6 +36,6 @@ if (!function_exists('alertError')) {
     function alertError($msg = 'Alert error', $options = [])
     {
         $options['title'] = 'Error!';
-        session()->setFlashdata('alert', ['type' => 'danger', 'msg' => $msg, 'options' => json_encode($options)]);
+        session()->setFlashdata('alert', ['type' => 'error', 'msg' => $msg, 'options' => json_encode($options)]);
     }
 }

@@ -12,6 +12,6 @@
         {% if alert.options %}
         Object.assign(alertContent, {{ alert.options|raw }});
         {% endif %}
-        $(document).Toasts('create', alertContent);
+        toastr.{{ alert.type }}('{{ alert.msg|raw }}'{% if alert.title %}, '{{ alert.title|raw }}'{% endif %});
     </script>
 {% endif %}
