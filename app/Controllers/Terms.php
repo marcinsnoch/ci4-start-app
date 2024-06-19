@@ -6,6 +6,6 @@ class Terms extends BaseController
 {
     public function index()
     {
-        return $this->twig->display('terms/index');
+        $this->twig->display('terms/index');
     }
 }

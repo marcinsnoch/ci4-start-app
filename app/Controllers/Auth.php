@@ -39,7 +39,7 @@ class Auth extends BaseController
             alertError('Login or password incorrect!');
         }
 
-        return $this->twig->display('auth/login');
+        $this->twig->display('auth/login');
     }
 
     /**
@@ -129,7 +129,7 @@ class Auth extends BaseController
             return redirect()->to('login');
         }
 
-        return $this->twig->display('auth/register');
+        $this->twig->display('auth/register');
     }
 
     /**

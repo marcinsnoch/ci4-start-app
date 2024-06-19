@@ -11,6 +11,6 @@ class Home extends BaseController
 //            alertError('Alert message', ['delay' => 1000000]);
             return redirect()->to('home');
         }
-        return $this->twig->display('home/index');
+        $this->twig->display('home/index');
     }
 }
