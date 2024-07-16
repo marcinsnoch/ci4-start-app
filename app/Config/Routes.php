@@ -16,7 +16,7 @@ $routes->match(['get', 'post'], 'reset-password', 'Auth::resetPassword', ['filte
 $routes->get('activation', 'Auth::activation', ['filter' => 'noauth']);
 
 //Auth required
-$routes->get('home', 'Home::index', ['filter' => 'auth']);
+$routes->get('home', 'Home::index');
 $routes->get('search', 'Search::index', ['filter' => 'auth']);
 
 $routes->get('profile', 'Profile::index', ['filter' => 'auth']);
