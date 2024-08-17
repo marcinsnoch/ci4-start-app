@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg fixed-top bg-white shadow">
     <div class="container">
-        <a class="navbar-brand" href="{{ site_url('/') }}">My App</a>
+        <a class="navbar-brand" href="{{ site_url('/') }}">{{ appConfig.appName|default('App Name') }}</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>

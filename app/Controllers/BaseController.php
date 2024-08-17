@@ -59,7 +59,7 @@ abstract class BaseController extends Controller
         parent::initController($request, $response, $logger);
 
         // Preload any models, libraries, etc, here.
-        $this->myConfig = config('MyConfig');
+        $this->appConfig = config('AppConfig');
         $this->session = Services::session();
         $this->validation = Services::validation();
         service('eloquent');
@@ -70,7 +70,7 @@ abstract class BaseController extends Controller
     {
         $this->twigConfig = config('Twig');
         $this->twig = new Twig($this->twigConfig->config);
-        $this->twig->addGlobal('myConfig', $this->myConfig);
+        $this->twig->addGlobal('appConfig', $this->appConfig);
         $this->twig->addGlobal('session', $this->session);
         $this->twig->addGlobal('validation', $this->validation);
 	}

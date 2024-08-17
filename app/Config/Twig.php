@@ -9,11 +9,12 @@ class Twig extends BaseConfig
     public array $config = [];
 
     private array $functions_asis = [
-        'current_url',
     ];
 
     private array $functions_safe = [
         'csrf_meta',
+        'current_url',
+        'url_to',
     ];
 
     private array $debug_functions = [

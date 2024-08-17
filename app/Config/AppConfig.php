@@ -4,9 +4,9 @@ namespace Config;
 
 use CodeIgniter\Config\BaseConfig;
 
-class MyConfig extends BaseConfig
+class AppConfig extends BaseConfig
 {
-    public string $appName = 'MyApplication';
+    public string $appName = 'My Equipment';
     public string $appEmail = 'webmaster@example.com';
     public bool $register = true;
 }

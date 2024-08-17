@@ -12,8 +12,8 @@
         <div class="row">
             {% for i in 0..19 %}
                 <div class="col m-2 text-center">
-                    <a href="{{ site_url("category/1") }}" class="link-underline link-underline-opacity-0 fw-bold text-dark">
-                        <img src="https://github.com/mdo.png" alt="mdo" width="86" height="86" class="rounded-circle mb-2">
+                    <a href="{{ site_url("category/" ~ loop.index) }}" class="link-underline link-underline-opacity-0 fw-bold text-dark">
+                        <img src="https://picsum.photos/id/{{ loop.index + 5 }}/300/300" alt="mdo" width="86" height="86" class="rounded-circle mb-2">
                         Category
                     </a>
                 </div>

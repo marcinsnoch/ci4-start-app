@@ -6,7 +6,7 @@
             <meta charset="utf-8">
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
             <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-            <title>{% block title %}Page Title{% endblock %} &ndash; {{ config.appName|default('App Name') }}</title>
+            <title>{% block title %}Page Title{% endblock %} &ndash; {{ appConfig.appName|default('App Name') }}</title>
             <link rel="shortcut icon" type="image/x-icon" href="{{ base_url('favicon.ico') }}">
             {% block styles %}{% endblock %}
             <link href="{{ base_url('plugins/bootstrap-icons/bootstrap-icons.min.css') }}" rel="stylesheet">
