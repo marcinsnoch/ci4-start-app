@@ -1,18 +1,79 @@
-@import "https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700";
+html {
+    height: 100%;
+}
 
-main {
-    padding-bottom: 40px;
-    > .container {
-        padding-top: 80px;
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    > main {
+        flex-shrink: 0;
+    }
+    > footer {
+        margin-top: auto;
     }
 }
 
-label.is-invalid {
-    color: red;
-}
-.toast {
-    margin-top: 1rem;
-    margin-right: 1rem;
-    min-width: 20rem;
+.navbar {
+    a {
+        text-decoration: none;
+    }
+    .navbar-brand {
+        font-size: 1rem;
+    }
 }
 
+.custom-sidebar {
+    max-width: 80%;
+    a {
+        &.logo {
+            color: #fff;
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-decoration: none;
+        }
+    }
+    ul.nav {
+        padding-top: 15px;
+        display: block;
+        li {
+            a {
+                color: #fff;
+                &:focus {
+                    /*color: #fff;*/
+                }
+                &:hover {
+                    /*color: #fff;*/
+                    background: rgba(0, 0, 0, 0.5);
+                }
+                &.nav-link.dropdown::after {
+                    display: inline-block;
+                    margin-left: .255em;
+                    vertical-align: .255em;
+                    content: "";
+                    border-top: .3em solid;
+                    border-right: .3em solid transparent;
+                    border-bottom: 0;
+                    border-left: .3em solid transparent;
+                }
+                .notification-badge {
+                    background-color: rgba(255, 255, 255, .4);
+                    border-radius: 25px;
+                    float: right;
+                    font-size: 11px;
+                    padding: 3px 8px;
+                }
+            }
+            i {
+                margin-right: 7px;
+            }
+        }
+    }
+}
+@media (min-width: 576px) {
+    .custom-sidebar {
+        min-width: 300px;
+    }
+}

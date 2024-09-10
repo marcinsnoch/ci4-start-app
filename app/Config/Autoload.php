@@ -93,6 +93,7 @@ class Autoload extends AutoloadConfig
     public $helpers = [
         'alerts',
         'cookie',
+        'date',
         'form',
     ];
 }

@@ -1,18 +1,75 @@
-@import "https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700";
-main {
-  padding-bottom: 40px;
-}
-main > .container {
-  padding-top: 80px;
+html {
+  height: 100%;
 }
 
-label.is-invalid {
-  color: red;
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+body > main {
+  flex-shrink: 0;
+}
+body > footer {
+  margin-top: auto;
 }
 
-.toast {
-  margin-top: 1rem;
-  margin-right: 1rem;
-  min-width: 20rem;
+.navbar a {
+  text-decoration: none;
+}
+.navbar .navbar-brand {
+  font-size: 1rem;
+}
+
+.custom-sidebar {
+  max-width: 80%;
+}
+.custom-sidebar a.logo {
+  color: #fff;
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  text-decoration: none;
+}
+.custom-sidebar ul.nav {
+  padding-top: 15px;
+  display: block;
+}
+.custom-sidebar ul.nav li a {
+  color: #fff;
+}
+.custom-sidebar ul.nav li a:focus {
+  /*color: #fff;*/
+}
+.custom-sidebar ul.nav li a:hover {
+  /*color: #fff;*/
+  background: rgba(0, 0, 0, 0.5);
+}
+.custom-sidebar ul.nav li a.nav-link.dropdown::after {
+  display: inline-block;
+  margin-left: 0.255em;
+  vertical-align: 0.255em;
+  content: "";
+  border-top: 0.3em solid;
+  border-right: 0.3em solid transparent;
+  border-bottom: 0;
+  border-left: 0.3em solid transparent;
+}
+.custom-sidebar ul.nav li a .notification-badge {
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 25px;
+  float: right;
+  font-size: 11px;
+  padding: 3px 8px;
+}
+.custom-sidebar ul.nav li i {
+  margin-right: 7px;
+}
+
+@media (min-width: 576px) {
+  .custom-sidebar {
+    min-width: 300px;
+  }
 }
 /*# sourceMappingURL=styles.css.map */
